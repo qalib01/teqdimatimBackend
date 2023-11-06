@@ -1,60 +1,47 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('sliders', {
+    await queryInterface.createTable('product_formats', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
-      },
-      title: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: 'No Data',
+        type: Sequelize.INTEGER
       },
       name: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'No Data',
+        defaultValue: 'No Data'
       },
       key: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'no_data',
-      },
-      img_source: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: 'default_carousel_image.png'
-      },
-      link: {
-        type: Sequelize.STRING,
+        defaultValue: 'no_data'
       },
       status: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: false,
+        defaultValue: false
       },
       createdBy: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: '00000000-0000-0000-00000000',
+        defaultValue: '00000000-0000-0000-00000000'
       },
       updatedBy: {
         type: Sequelize.STRING,
       },
       createdAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE
       },
       updatedAt: {
-        type: Sequelize.DATE,
         allowNull: false,
+        type: Sequelize.DATE
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('sliders');
+    await queryInterface.dropTable('product_formats');
   }
 };

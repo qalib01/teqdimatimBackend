@@ -1,40 +1,39 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('faq_groups', {
+    await queryInterface.createTable('product_reviews_waitlists', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
+      product_id: {
         type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: 'No Data',
+        allowNull: false
       },
-      title: {
+      rating: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      review: {
+        type: Sequelize.STRING
+      },
+      reviewer_name: {
         type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: 'No Data',
+        allowNull: false
       },
-      key: {
+      reviewer_surname: {
         type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: 'no_data',
+        allowNull: false
       },
-      status: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
-      },
-      createdBy: {
+      reviewer_email: {
         type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: '00000000-0000-0000-00000000',
+        allowNull: false
       },
-      updatedBy: {
+      ip: {
         type: Sequelize.STRING,
+        defaultValue: undefined
       },
       createdAt: {
         allowNull: false,
@@ -47,6 +46,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('faq_groups');
+    await queryInterface.dropTable('product_reviews_waitlists');
   }
 };

@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     link: DataTypes.STRING,
     status: DataTypes.BOOLEAN,
     createdBy: DataTypes.BOOLEAN,
-    editedBy: DataTypes.BOOLEAN,
+    updatedBy: DataTypes.BOOLEAN,
   }, {
     sequelize,
     modelName: 'sliders',
