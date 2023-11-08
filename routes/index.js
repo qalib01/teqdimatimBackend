@@ -3,7 +3,7 @@ let router = express.Router();
 let db = require('../models/index.js');
 
 
-/* GET faq data. */
+/* GET faqs data. */
 router.get('/faqs', async (req, res, next) => {
   try {
     const faq_groups = await db.faq_groups.findAll({
@@ -31,7 +31,7 @@ router.get('/faqs', async (req, res, next) => {
   }
 });
 
-/* GET product data. */
+/* GET products data. */
 router.get('/products', async (req, res, next) => {
   try {
     const products = await db.products.findAll({
@@ -72,7 +72,7 @@ router.get('/products', async (req, res, next) => {
   }
 });
 
-/* GET category data. */
+/* GET categories data. */
 router.get('/categories', async (req, res, next) => {
   try {
     const categories = await db.product_categories.findAll({
@@ -80,7 +80,7 @@ router.get('/categories', async (req, res, next) => {
         status: true,
       },
       order: [ 
-        [ 'createdAt', 'DESC' ]
+        [ 'createdAt', 'ASC' ]
       ]
     });
 
@@ -95,6 +95,86 @@ router.get('/categories', async (req, res, next) => {
   }
 });
 
+/* GET product data by id. */
+router.get('/product/find_by_id/:id', async (req, res, next) => {
+  try {
+    let id = req.params.id;
+    const product = await db.products.findOne({
+      where: {
+        id,
+      },
+      include: [
+        {
+          model: db.product_categories,
+          as: 'categories',
+        },
+        {
+          model: db.product_formats,
+          as: 'formats',
+        },
+        {
+          model: db.product_languages,
+          as: 'languages',
+        },
+        {
+          model: db.product_sizes,
+          as: 'sizes',
+        }
+      ]
+    });
+
+    if (!product) {
+      return res.status(404).json({ error: 'Not found!' });
+    }
+
+    res.json(product);
+  } catch (error) {
+    console.error('Error in /product route:', error);
+    res.status(500).json({ error: 'Internal server error!' });
+  }
+});
+
+/* GET products data by category. */
+router.get('/product/find_by_category/:id', async (req, res, next) => {
+  try {
+    let id = req.params.id;
+    const product = await db.products.findAll({
+      include: [
+        {
+          model: db.product_categories,
+          as: 'categories',
+          where: {
+            id
+          }
+        },
+        {
+          model: db.product_formats,
+          as: 'formats',
+        },
+        {
+          model: db.product_languages,
+          as: 'languages',
+        },
+        {
+          model: db.product_sizes,
+          as: 'sizes',
+        }
+      ],
+      order: [ 
+        [ 'createdAt', 'ASC' ]
+      ]
+    });
+
+    if (!product) {
+      return res.status(404).json({ error: 'Not found!' });
+    }
+
+    res.json(product);
+  } catch (error) {
+    console.error('Error in /product route:', error);
+    res.status(500).json({ error: 'Internal server error!' });
+  }
+});
 
 
 module.exports = router;

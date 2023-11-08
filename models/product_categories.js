@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   product_categories.init({
     name: DataTypes.STRING,
     key: DataTypes.STRING,
+    cover_img: DataTypes.STRING,
     status: DataTypes.BOOLEAN,
     createdBy: DataTypes.STRING,
     updatedBy: DataTypes.STRING,

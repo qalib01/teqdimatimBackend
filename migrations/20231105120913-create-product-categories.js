@@ -18,6 +18,11 @@ module.exports = {
         allowNull: false,
         defaultValue: 'no_data'
       },
+      cover_img: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: 'default_product.png'
+      },
       status: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
