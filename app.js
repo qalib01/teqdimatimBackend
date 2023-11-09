@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-const allowedOrigins = ['https://teqdimatim.az/', 'http://localhost:3000'];
+const allowedOrigins = ['https://teqdimatim.az', 'http://localhost:3000'];
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -33,7 +33,7 @@ app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  res.status(400).json('Not found!');
 });
 
 // error handler
@@ -43,8 +43,7 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  res.status(500).json('Internal server error!')
 });
 
 module.exports = app;

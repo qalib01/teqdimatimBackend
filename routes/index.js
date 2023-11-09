@@ -176,5 +176,74 @@ router.get('/product/find_by_category/:id', async (req, res, next) => {
   }
 });
 
+/* GET carousels data. */
+router.get('/carousels', async (req, res, next) => {
+  try {
+    const carousels = await db.carousels.findAll({
+      where: {
+        status: true,
+      },
+      order: [ 
+        [ 'createdAt', 'ASC' ]
+      ]
+    });
+
+    if (!carousels || carousels.length === 0) {
+      return res.status(404).json({ error: 'Not found!' });
+    }
+
+    res.json(carousels);
+  } catch (error) {
+    console.error('Error in /carousels route:', error);
+    res.status(500).json({ error: 'Internal server error!' });
+  }
+});
+
+/* GET team_members data. */
+router.get('/team_members', async (req, res, next) => {
+  try {
+    const team_members = await db.team_members.findAll({
+      where: {
+        status: true,
+      },
+      include: [
+        {
+          model: db.team_member_social_medias,
+          as: 'social_medias',
+        }
+      ],
+    });
+
+    if (!team_members || team_members.length === 0) {
+      return res.status(404).json({ error: 'Not found!' });
+    }
+
+    res.json(team_members);
+  } catch (error) {
+    console.error('Error in /team_members route:', error);
+    res.status(500).json({ error: 'Internal server error!' });
+  }
+});
+
+/* GET testimonials data. */
+router.get('/testimonials', async (req, res, next) => {
+  try {
+    const testimonials = await db.testimonials.findAll({
+      where: {
+        status: true,
+      },
+    });
+
+    if (!testimonials || testimonials.length === 0) {
+      return res.status(404).json({ error: 'Not found!' });
+    }
+
+    res.json(testimonials);
+  } catch (error) {
+    console.error('Error in /testimonials route:', error);
+    res.status(500).json({ error: 'Internal server error!' });
+  }
+});
+
 
 module.exports = router;
