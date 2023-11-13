@@ -19,7 +19,9 @@ module.exports = (sequelize, DataTypes) => {
   team_member_social_medias.init({
     member_id: DataTypes.STRING,
     name: DataTypes.STRING,
-    username: DataTypes.STRING
+    username: DataTypes.STRING,
+    createdBy: DataTypes.STRING,
+    updatedBy: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'team_member_social_medias',

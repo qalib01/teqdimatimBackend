@@ -24,6 +24,8 @@ module.exports = (sequelize, DataTypes) => {
     profession: DataTypes.STRING,
     profile_photo: DataTypes.STRING,
     status: DataTypes.BOOLEAN,
+    createdBy: DataTypes.STRING,
+    updatedBy: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'team_members',

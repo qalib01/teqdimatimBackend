@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('testimonials', {
+    await queryInterface.createTable('contact_messages', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,41 +11,27 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'No data'
-      },
-      surname: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: 'No data'
+        defaultValue: 'No data',
       },
       email: {
         type: Sequelize.STRING,
-        defaultValue: 'no_data'
+        allowNull: false,
+        defaultValue: 'no_data',
       },
-      profession: {
+      subject: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'No data'
+        defaultValue: 'No data',
       },
-      profile_picture: {
+      message: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'default_user.png'
+        defaultValue: 'No data',
       },
-      opinion: {
-        type: Sequelize.TEXT,
+      status_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: 'No data'
-      },
-      status: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
-      },
-      createdBy: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: '00000000-0000-0000-00000000'
+        defaultValue: 1,
       },
       updatedBy: {
         type: Sequelize.STRING,
@@ -61,6 +47,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('testimonials');
+    await queryInterface.dropTable('contact_messages');
   }
 };

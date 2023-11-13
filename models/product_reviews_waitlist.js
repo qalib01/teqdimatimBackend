@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     reviewer_name: DataTypes.STRING,
     reviewer_surname: DataTypes.STRING,
     reviewer_email: DataTypes.STRING,
-    ip: DataTypes.STRING,
+    ip: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'product_reviews_waitlist',

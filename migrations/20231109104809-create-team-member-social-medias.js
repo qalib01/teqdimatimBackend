@@ -22,6 +22,14 @@ module.exports = {
         allowNull: false,
         defaultValue: 'no_data'
       },
+      createdBy: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: '00000000-0000-0000-00000000'
+      },
+      updatedBy: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

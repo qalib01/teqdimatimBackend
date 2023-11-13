@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     faq_group_id: DataTypes.INTEGER,
     status: DataTypes.BOOLEAN,
     createdBy: DataTypes.STRING,
-    updatedBy: DataTypes.STRING,
+    updatedBy: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'faqs',

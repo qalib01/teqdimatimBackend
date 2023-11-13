@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     reviewer_email: DataTypes.STRING,
     ip: DataTypes.STRING,
     confirmedBy: DataTypes.STRING,
-    updatedBy: DataTypes.STRING,
+    updatedBy: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'product_reviews',

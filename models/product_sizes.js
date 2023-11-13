@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     key: DataTypes.STRING,
     status: DataTypes.BOOLEAN,
     createdBy: DataTypes.STRING,
-    updatedBy: DataTypes.STRING,
+    updatedBy: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'product_sizes',

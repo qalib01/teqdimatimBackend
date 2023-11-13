@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     cover_img: DataTypes.STRING,
     status: DataTypes.BOOLEAN,
     createdBy: DataTypes.STRING,
-    updatedBy: DataTypes.STRING,
+    updatedBy: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'product_categories',

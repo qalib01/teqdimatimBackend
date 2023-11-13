@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
     cover_img: DataTypes.STRING,
     link: DataTypes.STRING,
     status: DataTypes.BOOLEAN,
-    createdBy: DataTypes.BOOLEAN,
-    updatedBy: DataTypes.BOOLEAN,
+    createdBy: DataTypes.STRING,
+    updatedBy: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'carousels',

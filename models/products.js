@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
     status: DataTypes.BOOLEAN,
     createdBy: DataTypes.STRING,
     uploadedBy: DataTypes.STRING,
-    updatedBy: DataTypes.STRING,
+    updatedBy: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'products',

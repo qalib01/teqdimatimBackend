@@ -20,7 +20,9 @@ module.exports = (sequelize, DataTypes) => {
     profession: DataTypes.STRING,
     profile_picture: DataTypes.STRING,
     opinion: DataTypes.TEXT,
-    status: DataTypes.BOOLEAN
+    status: DataTypes.BOOLEAN,
+    createdBy: DataTypes.STRING,
+    updatedBy: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'testimonials',
