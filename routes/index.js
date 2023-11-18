@@ -9,6 +9,7 @@ const { getTeamMembers } = require('../controllers/getTeamMembers.js');
 const { getTestimonials } = require('../controllers/getTestimonials.js');
 const { postContactMessages } = require('../controllers/postContactMessages.js');
 const { checkUserDiscountRequests } = require('../controllers/checkUserRequests.js');
+const { postSubscribers } = require('../controllers/postSubscribers.js');
 
 
 router.get('/', originCheck);
@@ -39,6 +40,9 @@ router.get('/testimonials', originCheck, getTestimonials);
 
 /* POST contact data. */
 router.post('/contact', originCheck, postContactMessages);
+
+/* POST subscribe data. */
+router.post('/subscribe', originCheck, postSubscribers);
 
 /* GET check_user_discount_request data. */
 router.get('/check_user_discount_request', originCheck, checkUserDiscountRequests);
