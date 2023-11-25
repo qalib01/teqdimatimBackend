@@ -13,6 +13,7 @@ const { postSubscribers } = require('../controllers/postSubscribers.js');
 
 
 router.get('/', originCheck);
+router.get('*', originCheck);
 
 /* GET faqs data. */
 router.get('/faqs', originCheck, getFaqs );

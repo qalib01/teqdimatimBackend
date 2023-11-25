@@ -10,23 +10,28 @@ let getProducts = async (req, res) => {
                 {
                     model: db.product_categories,
                     as: 'categories',
+                    attributes: [ 'name', 'key', 'cover_img' ],
                 },
                 {
                     model: db.product_formats,
                     as: 'formats',
+                    attributes: [ 'name', 'key' ],
                 },
                 {
                     model: db.product_languages,
                     as: 'languages',
+                    attributes: [ 'name', 'key' ],
                 },
                 {
                     model: db.product_sizes,
                     as: 'sizes',
+                    attributes: [ 'name', 'key' ],
                 }
             ],
             order: [
                 ['createdAt', 'DESC']
-            ]
+            ],
+            attributes: [ 'id', 'title', 'name', 'key', 'cover_img', 'description', 'price' ],
         });
 
         if (!products || products.length === 0) {
@@ -51,20 +56,25 @@ let getProductById = async (req, res) => {
                 {
                     model: db.product_categories,
                     as: 'categories',
+                    attributes: [ 'id', 'name', 'key', 'cover_img' ],
                 },
                 {
                     model: db.product_formats,
                     as: 'formats',
+                    attributes: [ 'name', 'key' ],
                 },
                 {
                     model: db.product_languages,
                     as: 'languages',
+                    attributes: [ 'name', 'key' ],
                 },
                 {
                     model: db.product_sizes,
                     as: 'sizes',
+                    attributes: [ 'name', 'key' ],
                 }
-            ]
+            ],
+            attributes: [ 'id', 'title', 'name', 'key', 'cover_img', 'description', 'price' ],
         });
 
         if (!product) {
@@ -88,24 +98,29 @@ let getProductByCategory = async (req, res) => {
                     as: 'categories',
                     where: {
                         id
-                    }
+                    },
+                    attributes: [ 'name', 'key', 'cover_img' ],
                 },
                 {
                     model: db.product_formats,
                     as: 'formats',
+                    attributes: [ 'name', 'key' ],
                 },
                 {
                     model: db.product_languages,
                     as: 'languages',
+                    attributes: [ 'name', 'key' ],
                 },
                 {
                     model: db.product_sizes,
                     as: 'sizes',
+                    attributes: [ 'name', 'key' ],
                 }
             ],
             order: [
                 ['createdAt', 'ASC']
-            ]
+            ],
+            attributes: [ 'id', 'title', 'name', 'key', 'cover_img', 'description', 'price' ],
         });
 
         if (!product) {

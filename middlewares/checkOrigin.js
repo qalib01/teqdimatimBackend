@@ -1,7 +1,9 @@
 const originCheck = (req, res, next) => {
     const allowedOrigins = ['https://teqdimatim.az', 'http://localhost:3000'];
     const origin = req.headers.origin;
-    if (allowedOrigins.includes(origin)) {
+    const allowedMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']; // Add the allowed methods
+
+    if (allowedOrigins.includes(origin) && allowedMethods.includes(req.method)) {
         // Allow requests from the allowed origins
         next();
     } else {

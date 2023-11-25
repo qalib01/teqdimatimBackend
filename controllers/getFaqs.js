@@ -12,14 +12,17 @@ let getFaqs = async (req, res) => {
                 where: {
                     status: true,
                 },
-                // required: true, // Ensure all associated faqs have status: true
+                attributes: [ 'question', 'answer', 'keyword', 'link' ],
             },
+            attributes: [ 'name', 'title', 'key' ],
         });
 
         if (!faq_groups || faq_groups.length === 0) {
             return res.status(404).json({ error: 'Not found!' });
         }
 
+        const ip = req.connection.remoteAddress;
+        console.log('ip: ', ip);
         res.json(faq_groups);
     } catch (error) {
         console.error('Error in /faqs route:', error);

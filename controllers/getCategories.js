@@ -8,7 +8,8 @@ let getCategories = async (req, res) => {
             },
             order: [
                 ['createdAt', 'ASC']
-            ]
+            ],
+            attributes: [ 'title', 'name', 'key', 'cover_img', 'description', 'price' ],
         });
 
         if (!categories || categories.length === 0) {

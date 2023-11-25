@@ -6,6 +6,7 @@ let getTestimonials = async (req, res) => {
             where: {
                 status: true,
             },
+            attributes: [ 'name', 'surname', 'profession', 'profile_picture', 'opinion' ],
         });
 
         if (!testimonials || testimonials.length === 0) {

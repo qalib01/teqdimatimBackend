@@ -1,4 +1,6 @@
 const db = require('../models/index');
+const { errorMessages } = require('../customMessages/errorMessages');
+const { successMessages } = require('../customMessages/successMessages');
 
 let postSubscribers = async (req, res) => {
     let inputData = req.body;
@@ -10,25 +12,16 @@ let postSubscribers = async (req, res) => {
         })
         
         if (hasUser) {
-            res.status(409).json({
-                key: 'error',
-                message: 'Qeyd olunan emaildə abunəçimiz artıq mövcuddur. Xahiş olunur ki, başqa email adresi yoxlayasınız!'
-            });
+            res.status(409).json( errorMessages.SUBSCRIPTION_EMAIL_CONFLICT );
         } else {
             await db.subscribers.create({
                 email: inputData.email,
             });
 
-            res.status(200).json({
-                key: 'success',
-                message: 'Abunəliyiniz uğurla tamamlandı. Artıq xəbərlər, endirimlər, yeniliklərlə bağlı məlumatları tez bir zamanda əldə edəcəksiniz!'
-            });
+            res.status(200).json( successMessages.SUBSCRIPTION_COMPLETED );
         }
     } catch (error) {
-        res.status(500).json({
-            key: 'error',
-            message: 'Abunəliyinizin yoxlanılması zamanı gözlənilməz xəta baş verdi. Xahiş olunur ki, daha sonra yenidən cəhd edəsiniz!'
-        });
+        res.status(500).json( errorMessages.SUBSCRIPTION_SERVER_ERROR );
     }
 }
 

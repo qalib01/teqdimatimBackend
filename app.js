@@ -1,8 +1,5 @@
-var createError = require('http-errors');
 var express = require('express');
-var path = require('path');
 var cookieParser = require('cookie-parser');
-var lessMiddleware = require('less-middleware');
 var logger = require('morgan');
 var cors = require('cors');
 var indexRouter = require('./routes/index');
@@ -10,10 +7,11 @@ var app = express();
 
 // view engine setup
 app.set('view engine', 'ejs');
+app.set('trust proxy', true);
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false })); 
 app.use(cookieParser());
 
 const allowedOrigins = ['https://teqdimatim.az', 'http://localhost:3000'];
@@ -25,9 +23,20 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Allow specific methods
 }));
 
+// Middleware to explicitly set the Access-Control-Allow-Origin header
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('access-control-allow-origin', origin);
+  }
+  next();
+});
+
 app.use('/', indexRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

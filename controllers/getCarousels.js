@@ -8,7 +8,8 @@ let getCarousels = async (req, res) => {
             },
             order: [
                 ['createdAt', 'ASC']
-            ]
+            ],
+            attributes: [ 'title', 'name', 'key', 'cover_img', 'link' ]
         });
 
         if (!carousels || carousels.length === 0) {

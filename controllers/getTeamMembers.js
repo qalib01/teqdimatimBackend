@@ -10,8 +10,12 @@ let getTeamMembers = async (req, res) => {
                 {
                     model: db.team_member_social_medias,
                     as: 'social_medias',
+                    attributes: [
+                        'name', 'username'
+                    ]
                 }
             ],
+            attributes: [ 'name', 'surname', 'profession', 'profile_photo' ],
         });
 
         if (!team_members || team_members.length === 0) {
