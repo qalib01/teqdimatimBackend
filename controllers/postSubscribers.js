@@ -21,7 +21,7 @@ let postSubscribers = async (req, res) => {
             res.status(200).json( successMessages.SUBSCRIPTION_COMPLETED );
         }
     } catch (error) {
-        res.status(500).json( errorMessages.SUBSCRIPTION_SERVER_ERROR );
+        res.status(500).json( errorMessages.GENERAL_SERVER_ERROR );
     }
 }
 

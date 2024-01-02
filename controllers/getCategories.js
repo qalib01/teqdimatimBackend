@@ -18,9 +18,52 @@ let getCategories = async (req, res) => {
 
         res.json(categories);
     } catch (error) {
-        console.error('Error in /categories route:', error);
+        console.error('Error in /getCategories route:', error);
         res.status(500).json({ error: 'Internal server error!' });
     }
 }
 
-module.exports = { getCategories };
+let getPopularCategories = async (req, res) => {
+    try {
+        const products = await db.products.findAll({
+            where: {
+                status: true,
+            },
+            order: [
+                ['createdAt', 'ASC']
+            ],
+            attributes: [ 'category_id' ],
+        });
+
+        const categories = await db.product_categories.findAll({
+            where: {
+                status: true,
+            }
+        })
+
+        let popularCategories;
+
+        if(categories) {
+            // Map category counts to category objects
+            let categoryCount = products.reduce((acc, product) => {
+                const categoryId = product.category_id;
+                acc[categoryId] = (acc[categoryId] || 0) + 1;
+                return acc;
+            }, {});
+
+            // Map category counts to category objects
+            const categoriesWithCount = categories.map(category => ({
+                category,
+                count: categoryCount[category.id] || 0,
+            }));
+            popularCategories = categoriesWithCount.sort((a, b) => b.count - a.count)
+        }
+
+        res.json(popularCategories);
+    } catch (error) {
+        console.error('Error in /getPopularCategories route:', error);
+        res.status(500).json({ error: 'Internal server error!' });
+    }
+}
+
+module.exports = { getCategories, getPopularCategories };

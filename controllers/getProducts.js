@@ -11,6 +11,9 @@ let getProducts = async (req, res) => {
                     model: db.product_categories,
                     as: 'categories',
                     attributes: [ 'name', 'key', 'cover_img' ],
+                    where: {
+                        status: true,
+                    }
                 },
                 {
                     model: db.product_formats,
@@ -57,6 +60,9 @@ let getProductById = async (req, res) => {
                     model: db.product_categories,
                     as: 'categories',
                     attributes: [ 'id', 'name', 'key', 'cover_img' ],
+                    where: {
+                        status: true
+                    }
                 },
                 {
                     model: db.product_formats,
@@ -97,7 +103,7 @@ let getProductByCategory = async (req, res) => {
                     model: db.product_categories,
                     as: 'categories',
                     where: {
-                        id
+                        id,
                     },
                     attributes: [ 'name', 'key', 'cover_img' ],
                 },

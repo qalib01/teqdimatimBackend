@@ -1,6 +1,7 @@
 const db = require('../models/index');
 require('dotenv').config();
 const nodeMailer = require('nodemailer');
+const CryptoJS = require('crypto-js');
 let { errorMessages } = require('../customMessages/errorMessages');
 let { successMessages } = require('../customMessages/successMessages');
 
@@ -34,9 +35,16 @@ let checkUserDiscountRequests = async (req, res) => {
         return discountPercent;
     }
 
+    const generateSecureToken = (token) => {
+        // const hash = crypto.createHash('sha256').update(token).digest('hex'); // SHA-256 example
+        // return hash;
+        let encryptedSlug = CryptoJS.AES.encrypt(token, process.env.CRYPTO_SECRET_KEY).toString();
+        return encryptedSlug;
+    }
+
     const sendEmail = async (name, email, invitedEmail, discountPercent, option) => {
         const guidGenerate = () => {
-            return 'xxxxxxxx-xxxx-yxxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,
+            return 'xxxxxxxx-yxxx-yxxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,
                 function (c) {
                     var uuid = Math.random() * 16 | 0, v = c == 'x' ? uuid : (uuid & 0x3 | 0x8);
                     return uuid.toString(16).toUpperCase();
@@ -53,20 +61,30 @@ let checkUserDiscountRequests = async (req, res) => {
             ip_adress: await req.connection.remoteAddress,
             email_content: undefined,
             email_status: 'pending',
-        })
+        });
         
         let mailSubject;
         let mailContent;
         let mailAdress;
+        
 
         try {
             if (option === 'ilk_sifaris') {
+                let link = generateSecureToken(emailId);
+                // console.log(`https://www.teqdimatim.az/order/${encodeURIComponent(link)}`);
+                // console.log('encodeURI-Link', encodeURI(link));
+                // console.log('encodeURIComponent-Link', encodeURIComponent(link));
+                // console.log('decodeURIComponent-Link', decodeURIComponent(link));
+                // let testUrl = CryptoJS.AES.decrypt(link, process.env.CRYPTO_SECRET_KEY);
+                // console.log('testUrl', testUrl);
+                // let originalSlug = testUrl.toString(CryptoJS.enc.Utf8);
+                // console.log('originalSlug', originalSlug);
                 mailSubject = `Sorğulanmış məlumatların nəticəsi barədə detallı məlumat`;
-                mailContent = `Hörtməli ${name}. Sorğunuz tesdiqlendi. Asagidaki linke daxil olaraq endirimi istifade ede bilersiniz!`;
+                mailContent = `Hörmətli ${name}. Sorğunuz tesdiqlendi. Asagidaki linke daxil olaraq endirimi istifade ede bilersiniz! Endiriminiz: ${discountPercent}% Link: www.teqdimatim.az/order/${encodeURIComponent(link)}`;
                 mailAdress = email;
             } else if (option === 'dostu_devet') {
                 mailSubject = `${name} adlı istifadəçidən dəvət`;
-                mailContent = `${name}  sizə təqdimatım.az platformasından təqdimat sifariş etmək və almaq üçün təklif göndərdi. Asagidaki linke daxil olaraq endirimi istifade ede bilersiniz!`;
+                mailContent = `${name} sizə təqdimatım.az platformasından təqdimat sifariş etmək və almaq üçün təklif göndərdi. Asagidaki linke daxil olaraq endirimi istifade ede bilersiniz!`;
                 mailAdress = invitedEmail;
             } else if (option === 'novbeti_sifaris') {
                 mailSubject = `Endirim sizi gözləyir!`;
@@ -106,6 +124,14 @@ let checkUserDiscountRequests = async (req, res) => {
                     id: emailId, 
                 }
             });
+
+            await db.order_requests.create({
+                id: emailId,
+                name,
+                email,
+                discountPercent,
+                customer_status: 'sending'
+            })
 
             return true;
         } catch (error) {
@@ -157,7 +183,8 @@ let checkUserDiscountRequests = async (req, res) => {
                         res.status(409).json( errorMessages.DISCOUNT_ILK_SIFARIS_CONFLICT );
                         break;
                     default:
-                        let emailRes = await sendEmail(name, email, '', '', option);
+                        let discountPercent = 30;
+                        let emailRes = await sendEmail(name, email, '', discountPercent, option);
                         switch (emailRes) {
                             case true:
                                 res.status(200).json( successMessages.DISCOUNT_ILK_SIFARIS );
@@ -177,7 +204,8 @@ let checkUserDiscountRequests = async (req, res) => {
                                 res.status(409).json( errorMessages.DISCOUNT_DOSTU_DEVET_CONFLICT );
                                 break;
                             default:
-                                let emailRes = await sendEmail(name, '', invitedEmail, '', option);
+                                let discountPercent = 30;
+                                let emailRes = await sendEmail(name, '', invitedEmail, discountPercent, option);
                                 switch (emailRes) {
                                     case true:
                                         res.status(200).json( successMessages.DISCOUNT_DOSTU_DEVET );
@@ -219,7 +247,7 @@ let checkUserDiscountRequests = async (req, res) => {
         }
     } catch (error) {
         console.error('Error in /check_user_request route:', error);
-        res.status(500).json( errorMessages.DISCOUNT_SERVER_ERROR );
+        res.status(500).json( errorMessages.GENERAL_SERVER_ERROR );
     }
 }
 
