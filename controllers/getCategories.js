@@ -9,7 +9,7 @@ let getCategories = async (req, res) => {
             order: [
                 ['createdAt', 'ASC']
             ],
-            attributes: [ 'title', 'name', 'key', 'cover_img', 'description', 'price' ],
+            attributes: [ 'name', 'key', 'cover_img', 'description' ],
         });
 
         if (!categories || categories.length === 0) {
@@ -34,11 +34,13 @@ let getPopularCategories = async (req, res) => {
             ],
             attributes: [ 'category_id' ],
         });
+        console.log(products);
 
         const categories = await db.product_categories.findAll({
             where: {
                 status: true,
-            }
+            },
+            attributes: [ 'name', 'key', 'cover_img' ],
         })
 
         let popularCategories;

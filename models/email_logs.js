@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     email_type: DataTypes.STRING,
     email_source: DataTypes.STRING,
     email_to: DataTypes.STRING,
-    ip_adress: DataTypes.STRING,
+    ipv4_adress: DataTypes.STRING,
+    email_subject: DataTypes.TEXT,
     email_content: DataTypes.TEXT,
     email_status: DataTypes.STRING,
   }, {

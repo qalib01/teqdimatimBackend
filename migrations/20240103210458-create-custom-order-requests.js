@@ -1,16 +1,16 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('custom_orders', {
+    await queryInterface.createTable('custom_order_requests', {
       id: {
         allowNull: false,
         autoIncrement: false,
         primaryKey: true,
         type: Sequelize.STRING
       },
-      customer_id: {
+      customer_request_id: {
+        type: Sequelize.STRING,
         allowNull: false,
-        type: Sequelize.STRING
       },
       subjectName: {
         type: Sequelize.STRING,
@@ -66,6 +66,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('custom_orders');
+    await queryInterface.dropTable('custom_order_requests');
   }
 };

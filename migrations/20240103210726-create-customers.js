@@ -1,47 +1,48 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('product_reviews', {
+    await queryInterface.createTable('customers', {
       id: {
-        type: Sequelize.STRING,
+        allowNull: false,
         autoIncrement: false,
         primaryKey: true,
-        allowNull: false
-      },
-      product_id: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      rating: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      review: {
         type: Sequelize.STRING
       },
-      reviewer_name: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      reviewer_surname: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      reviewer_email: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      ipv4_adress: {
-        type: Sequelize.STRING,
-        defaultValue: undefined
-      },
-      confirmedBy: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: '00000000-0000-0000-00000000'
       },
-      updatedBy: {
+      surname: {
         type: Sequelize.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      phone: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      university: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      speciality: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      degree: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      course: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      group: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
@@ -54,6 +55,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('product_reviews');
+    await queryInterface.dropTable('customers');
   }
 };

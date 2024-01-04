@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('order_requests', {
+    await queryInterface.createTable('customer_requests', {
       id: {
         allowNull: false,
         autoIncrement: false,
@@ -11,12 +11,10 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'No data'
+        defaultValue: 'No data',
       },
       surname: {
         type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: null
       },
       email: {
         type: Sequelize.STRING,
@@ -25,38 +23,25 @@ module.exports = {
       },
       phone: {
         type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: null
       },
       university: {
         type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: null
       },
       speciality: {
         type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: null
       },
       degree: {
         type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: null
       },
       course: {
         type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: null
       },
       group: {
         type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: null
       },
-      discountPercent: {
-        type: Sequelize.INTEGER,
+      discount_key: {
+        type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 0
       },
       customer_status: {
         type: Sequelize.STRING,
@@ -79,6 +64,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('order_requests');
+    await queryInterface.dropTable('customer_requests');
   }
 };

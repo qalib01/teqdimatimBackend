@@ -29,6 +29,11 @@ var errorMessages = {
         message: 'Siz artıq bir dəfə müraciət etmisiniz. Növbəti müraciətinizi 24 saat tamam olduqdan sonra edə bilərsiniz!'
     },
 
+    USER_HAVE_ACTIVE_REQUEST: {
+        key,
+        message: 'Sizin artıq aktiv müraicətiniz mövcuddur. Cari müraciət bitməmiş yeni müraciət aça bilməzsiniz!'
+    },
+
     CONTACT_MESSAGE_NOT_SEND: {
         key,
         message: 'Mesajınızın göndərilməsi zamanı gözlənilməz xəta baş verdi. Xahiş olunur ki, daha sonra yenidən cəhd edəsiniz!'
@@ -50,7 +55,7 @@ var errorMessages = {
 
     REQUEST_NOT_FOUND: {
         key,
-        message: 'Daxil olduğunuz linkə uyğun hər hansı bir müraciət tapılmadı. Xahiş olunur ki, linki yenidən yoxlayıb davam edəsiniz. Problem davam edirsə, bizimlə əlaqə saxlamağınızı xahiş edirik!'
+        message: 'Hər hansı bir müraciət tapılmadı. Xahiş olunur ki, linki yenidən yoxlayıb davam edəsiniz. Problem davam edərsə, bizimlə əlaqə saxlamağınızı xahiş edirik!'
     },
 
     GENERAL_SERVER_ERROR: {

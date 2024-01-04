@@ -1,4 +1,5 @@
 const db = require('../models/index');
+const { sequelize } = require('../models/index');
 require('dotenv').config();
 const nodeMailer = require('nodemailer');
 const CryptoJS = require('crypto-js');
@@ -6,33 +7,80 @@ let { errorMessages } = require('../customMessages/errorMessages');
 let { successMessages } = require('../customMessages/successMessages');
 
 let checkUserDiscountRequests = async (req, res) => {
-    const checkHasOrder = async (email) => {
-        let orders = await db.orders.findAll({
+    const checkIsCustomer = async (email) => {
+        let isCustomer = await db.customers.findOne({
+            where: {
+                email,
+            },
+        });
+        return isCustomer !== null ? true : false;
+    }
+
+    const checkDailyCustomerRequest = async (email) => {
+        let hasAlreadyRequest = await db.email_logs.findOne({
+            where: {
+                email_to: email,
+                email_source: 'check_discount',
+            },
+            order: [
+                ['updatedAt', 'DESC'],
+            ]
+        });
+
+        let checkDayRequest = true;
+        let checkEmailStatus = true;
+        if (hasAlreadyRequest !== null ? true : false) {
+            const createdUserRequestDate = new Date(hasAlreadyRequest.updatedAt);
+            const currentDate = new Date();
+            checkDayRequest = currentDate.getTime() - createdUserRequestDate.getTime() > 24 * 60 * 60 * 1000;
+            checkEmailStatus = hasAlreadyRequest.email_status !== 'success';
+        }
+
+        return checkDayRequest || checkEmailStatus;
+    }
+
+    const checkActiveRequest = async (email) => {
+        let hasActiveRequest = await db.customer_requests.findOne({
+            where: {
+                email,
+            },
+        });
+
+        return hasActiveRequest === null ? true : false;
+    }
+
+    const getAllOrders = async (email) => {
+        let orders = await db.customers.findAll({
+            include: [
+                {
+                    model: sequelize.model('custom_orders'),
+                    as: 'customOrders',
+                }
+            ],
             where: {
                 email,
             }
         });
-        return orders;
+        return orders ? orders.length : 0;
     }
 
-    const checkDiscountPercent = (orders) => {
-        let orderQuantity = orders.length;
-        let discountPercent = 0;
+    const calculateDiscountPercent = (quantity) => {
+        let percent = 0;
 
-        if (orderQuantity < 3) {
-            discountPercent = 5;
-        } else if (orderQuantity < 5) {
-            discountPercent = 7;
-        } else if (orderQuantity < 9) {
-            discountPercent = 10;
-        } else if (orderQuantity < 15) {
-            discountPercent = 12;
-        } else if (orderQuantity < 25) {
-            discountPercent = 15;
+        if (quantity < 3) {
+            percent = 5;
+        } else if (quantity < 5) {
+            percent = 7;
+        } else if (quantity < 9) {
+            percent = 10;
+        } else if (quantity < 15) {
+            percent = 12;
+        } else if (quantity < 25) {
+            percent = 15;
         } else {
-            discountPercent = 20;
+            percent = 20;
         }
-        return discountPercent;
+        return percent;
     }
 
     const generateSecureToken = (token) => {
@@ -42,7 +90,19 @@ let checkUserDiscountRequests = async (req, res) => {
         return encryptedSlug;
     }
 
-    const sendEmail = async (name, email, invitedEmail, discountPercent, option) => {
+    const getDiscountInformation = async (key, percent) => {
+        let discount = await db.discounts.findOne({
+            where: {
+                key,
+            }
+        });
+        if (key === 'novbeti_sifaris') {
+            discount.percent = percent;
+        }
+        return discount;
+    }
+
+    const sendEmail = async (name, email, invitedEmail, discount) => {
         const guidGenerate = () => {
             return 'xxxxxxxx-yxxx-yxxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,
                 function (c) {
@@ -50,49 +110,43 @@ let checkUserDiscountRequests = async (req, res) => {
                     return uuid.toString(16).toUpperCase();
                 });
         }
+        let id = guidGenerate();
+        let customerId = guidGenerate();
+        let requestId = guidGenerate();
+        let linkSlug = `/customer_id=${customerId}/request_id=${requestId}`;
 
-        let emailId = guidGenerate();
-
-        await db.email_logs.create({
-            id: emailId,
-            email_type: option,
-            email_source: 'check_discount',
-            email_to: undefined,
-            ip_adress: await req.connection.remoteAddress,
-            email_content: undefined,
-            email_status: 'pending',
-        });
-        
-        let mailSubject;
-        let mailContent;
-        let mailAdress;
-        
+        let emailAdress;
+        let emailSubject;
+        let emailContent;
 
         try {
-            if (option === 'ilk_sifaris') {
-                let link = generateSecureToken(emailId);
-                // console.log(`https://www.teqdimatim.az/order/${encodeURIComponent(link)}`);
-                // console.log('encodeURI-Link', encodeURI(link));
-                // console.log('encodeURIComponent-Link', encodeURIComponent(link));
-                // console.log('decodeURIComponent-Link', decodeURIComponent(link));
-                // let testUrl = CryptoJS.AES.decrypt(link, process.env.CRYPTO_SECRET_KEY);
-                // console.log('testUrl', testUrl);
-                // let originalSlug = testUrl.toString(CryptoJS.enc.Utf8);
-                // console.log('originalSlug', originalSlug);
-                mailSubject = `Sorğulanmış məlumatların nəticəsi barədə detallı məlumat`;
-                mailContent = `Hörmətli ${name}. Sorğunuz tesdiqlendi. Asagidaki linke daxil olaraq endirimi istifade ede bilersiniz! Endiriminiz: ${discountPercent}% Link: www.teqdimatim.az/order/${encodeURIComponent(link)}`;
-                mailAdress = email;
-            } else if (option === 'dostu_devet') {
-                mailSubject = `${name} adlı istifadəçidən dəvət`;
-                mailContent = `${name} sizə təqdimatım.az platformasından təqdimat sifariş etmək və almaq üçün təklif göndərdi. Asagidaki linke daxil olaraq endirimi istifade ede bilersiniz!`;
-                mailAdress = invitedEmail;
-            } else if (option === 'novbeti_sifaris') {
-                mailSubject = `Endirim sizi gözləyir!`;
-                mailContent = `Hörmətli, ${name}. Sizin üçün təyin olunmuş endirim ${discountPercent}%'dir. Endirimdən faydalanmaq üçün aşağıdakı linkə keçid edə bilərsiniz. Endirimlərin hesablanma qaydasıyla tanış olmaq üçün https://teqdimatim.az/faqs səhifəsini ziyarət edə bilərsiniz!`;
-                mailAdress = email;
+            if (discount.key === 'ilk_sifaris') {
+                let slug = generateSecureToken(linkSlug);
+                emailAdress = email;
+                emailSubject = `Sorğulanmış məlumatların nəticəsi barədə detallı məlumat`;
+                emailContent = `Hörmətli ${name}. Sorğunuz tesdiqlendi. Asagidaki linke daxil olaraq endirimi istifade ede bilersiniz! Endiriminiz: ${discount.percent}% Link: www.teqdimatim.az/order/${encodeURIComponent(slug)}`;
+            } else if (discount.key === 'dostu_devet') {
+                emailAdress = invitedEmail;
+                emailSubject = `${name} adlı istifadəçidən dəvət`;
+                emailContent = `${name} sizə təqdimatım.az platformasından təqdimat sifariş etmək və almaq üçün sizə endirimli təklif göndərdi. Endiriminiz: ${discount.percent}% Asagidaki linke daxil olaraq endirimi istifade ede bilersiniz!`;
+            } else if (discount.key === 'novbeti_sifaris') {
+                emailAdress = email;
+                emailSubject = `Endirim sizi gözləyir!`;
+                emailContent = `Hörmətli, ${name}. Sizin üçün təyin olunmuş endirim ${discount.percent}%'dir. Endirimdən faydalanmaq üçün aşağıdakı linkə keçid edə bilərsiniz. Endirimlərin hesablanma qaydasıyla tanış olmaq üçün https://teqdimatim.az/faqs səhifəsini ziyarət edə bilərsiniz!`;
             } else {
                 return false;
             }
+
+            await db.email_logs.create({
+                id,
+                email_type: discount.key,
+                email_source: 'check_discount',
+                email_to: emailAdress,
+                ipv4_adress: await req.connection.remoteAddress,
+                email_subject: emailSubject,
+                email_content: emailContent,
+                email_status: 'pending',
+            });
 
             let transporter = nodeMailer.createTransport({
                 host: "smtp.gmail.com",
@@ -109,42 +163,40 @@ let checkUserDiscountRequests = async (req, res) => {
             });
             await transporter.sendMail({
                 from: `Təqdimat Məlumat Sistemi ${process.env.INFO_MAIL_ADRESS}`, // sender address
-                to: mailAdress, // list of receiver
-                subject: mailSubject, // Subject
-                html: mailContent, // html body
+                to: emailAdress, // list of receiver
+                subject: emailSubject, // Subject
+                html: emailContent, // html body
             });
 
             await db.email_logs.update({
-                email_to: mailAdress,
-                email_content: mailContent,
                 email_status: 'success',
             },
-            {
-                where: {
-                    id: emailId, 
-                }
-            });
+                {
+                    where: {
+                        id,
+                    }
+                });
 
-            await db.order_requests.create({
-                id: emailId,
+            await db.customer_requests.create({
+                id: customerId,
                 name,
                 email,
-                discountPercent,
-                customer_status: 'sending'
-            })
+                discount_key: discount.key,
+                customer_status: 'pending'
+            });
 
             return true;
         } catch (error) {
             await db.email_logs.update({
-                email_to: mailAdress,
-                email_content: mailContent,
+                email_to: emailAdress,
+                email_content: emailContent,
                 email_status: 'error',
             },
-            {
-                where: {
-                    id: emailId, 
-                }
-            });
+                {
+                    where: {
+                        id: id,
+                    }
+                });
 
             console.log(error);
             return false;
@@ -152,102 +204,93 @@ let checkUserDiscountRequests = async (req, res) => {
     }
 
     try {
-        let { name, email, invitedEmail, option } = req.query;
+        let { name, email, invitedEmail, discount_key } = req.query;
+        let sendAvaliable = await checkDailyCustomerRequest(email);
 
-        let hasAlreadyRequest = await db.email_logs.findOne({
-            where: {
-                email_to: email,
-                email_type: option,
-            },
-            order: [
-                [ 'updatedAt', 'DESC' ],
-            ]
-        });
+        if (sendAvaliable) {
+            let hasActiveRequest = await checkActiveRequest(email);
 
-        let checkDayRequest = true;
-        let checkEmailStatus = true;
-        if (hasAlreadyRequest) {
-            const createdUserRequestDate = new Date(hasAlreadyRequest.updatedAt);
-            const currentDate = new Date();
-            checkDayRequest = currentDate.getTime() - createdUserRequestDate.getTime() > 24 * 60 * 60 * 1000;
-            checkEmailStatus = hasAlreadyRequest.email_status !== 'success';
-        }
+            if (hasActiveRequest) {
+                let isCustomer = await checkIsCustomer(email);
+                let allRequests = await getAllOrders(email);
 
-        if (checkEmailStatus || checkDayRequest) {
-            let orders = await checkHasOrder(email);
-            let hasOrder = orders.length > 0;
-
-            if (option === 'ilk_sifaris') {
-                switch (hasOrder) {
-                    case true:
-                        res.status(409).json( errorMessages.DISCOUNT_ILK_SIFARIS_CONFLICT );
-                        break;
-                    default:
-                        let discountPercent = 30;
-                        let emailRes = await sendEmail(name, email, '', discountPercent, option);
-                        switch (emailRes) {
-                            case true:
-                                res.status(200).json( successMessages.DISCOUNT_ILK_SIFARIS );
-                                break;
-                            default:
-                                res.status(500).json( errorMessages.DISCOUNT_EMAIL_SEND );
-                                break;
-                        }
-                        break;
-                }
-            } else if (option === 'dostu_devet') {
-                switch (hasOrder) {
-                    case true:
-                        let hasOrder = await checkHasOrder(invitedEmail);
-                        switch (hasOrder.length > 0) {
-                            case true:
-                                res.status(409).json( errorMessages.DISCOUNT_DOSTU_DEVET_CONFLICT );
-                                break;
-                            default:
-                                let discountPercent = 30;
-                                let emailRes = await sendEmail(name, '', invitedEmail, discountPercent, option);
-                                switch (emailRes) {
-                                    case true:
-                                        res.status(200).json( successMessages.DISCOUNT_DOSTU_DEVET );
-                                        break;
-                                    default:
-                                        res.status(500).json( errorMessages.DISCOUNT_EMAIL_SEND );
-                                        break;
-                                }
-                                break;
-                        }
-                        break;
-                    default:
-                        res.status(403).json( errorMessages.DISCOUNT_NOT_ORDERS_YET );
-                        break;
-                }
-            } else if (option === 'novbeti_sifaris') {
-                switch (hasOrder) {
-                    case true:
-                        let discountPercent = checkDiscountPercent(orders);
-                        let emailRes = await sendEmail(name, email, '', discountPercent, option);
-                        switch (emailRes) {
-                            case true:
-                                res.status(200).json( successMessages.DISCOUNT_NOVBETI_SIFARIS );
-                                break;
-                            default:
-                                res.status(500).json( errorMessages.DISCOUNT_EMAIL_SEND );
-                                break;
-                        }
-                        break;
-                    default:
-                        res.status(403).json( errorMessages.DISCOUNT_NOT_ORDERS_YET );
-                        break;
+                if (discount_key === 'ilk_sifaris') {
+                    switch (isCustomer) {
+                        case true:
+                            res.status(409).json(errorMessages.DISCOUNT_ILK_SIFARIS_CONFLICT);
+                            break;
+                        default:
+                            let discount = await getDiscountInformation(discount_key);
+                            let emailRes = await sendEmail(name, email, '', discount);
+                            switch (emailRes) {
+                                case true:
+                                    res.status(200).json(successMessages.DISCOUNT_ILK_SIFARIS);
+                                    break;
+                                default:
+                                    res.status(500).json(errorMessages.DISCOUNT_EMAIL_SEND);
+                                    break;
+                            }
+                            break;
+                    }
+                } else if (discount_key === 'dostu_devet') {
+                    switch (isCustomer) {
+                        case true:
+                            let isCustomer = await checkIsCustomer(invitedEmail);
+                            switch (isCustomer) {
+                                case true:
+                                    res.status(409).json(errorMessages.DISCOUNT_DOSTU_DEVET_CONFLICT);
+                                    break;
+                                default:
+                                    let discount = await getDiscountInformation(discount_key);
+                                    let emailRes = await sendEmail(name, '', invitedEmail, discount);
+                                    switch (emailRes) {
+                                        case true:
+                                            res.status(200).json(successMessages.DISCOUNT_DOSTU_DEVET);
+                                            break;
+                                        default:
+                                            res.status(500).json(errorMessages.DISCOUNT_EMAIL_SEND);
+                                            break;
+                                    }
+                                    break;
+                            }
+                            break;
+                        default:
+                            res.status(403).json(errorMessages.DISCOUNT_NOT_ORDERS_YET);
+                            break;
+                    }
+                } else if (discount_key === 'novbeti_sifaris') {
+                    switch (isCustomer) {
+                        case true:
+                            let percent = calculateDiscountPercent(allRequests.length);
+                            let discount = await getDiscountInformation(discount_key, percent);
+                            let emailRes = await sendEmail(name, email, '', discount);
+                            switch (emailRes) {
+                                case true:
+                                    res.status(200).json(successMessages.DISCOUNT_NOVBETI_SIFARIS);
+                                    break;
+                                default:
+                                    res.status(500).json(errorMessages.DISCOUNT_EMAIL_SEND);
+                                    break;
+                            }
+                            break;
+                        default:
+                            res.status(403).json(errorMessages.DISCOUNT_NOT_ORDERS_YET);
+                            break;
+                    }
+                } else {
+                    res.status(404).json(errorMessages.DISCOUNT_NOT_TRUE_OPTION);
                 }
             } else {
-                res.status(404).json( errorMessages.DISCOUNT_NOT_TRUE_OPTION );
+                res.status(409).json(errorMessages.USER_HAVE_ACTIVE_REQUEST);
             }
+
         } else {
-            res.status(409).json( errorMessages.EMAIL_DAILY_LIMIT );
+            res.status(409).json(errorMessages.EMAIL_DAILY_LIMIT);
         }
+
     } catch (error) {
         console.error('Error in /check_user_request route:', error);
-        res.status(500).json( errorMessages.GENERAL_SERVER_ERROR );
+        res.status(500).json(errorMessages.GENERAL_SERVER_ERROR);
     }
 }
 

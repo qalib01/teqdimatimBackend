@@ -23,10 +23,15 @@ module.exports = {
         allowNull: false,
         defaultValue: 'no_data',
       },
-      ip_adress: {
+      ipv4_adress: {
         type: Sequelize.STRING,
         allowNull: false,
         defaultValue: '0.0.0.0',
+      },
+      email_subject: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+        defaultValue: 'No data',
       },
       email_content: {
         type: Sequelize.TEXT,
