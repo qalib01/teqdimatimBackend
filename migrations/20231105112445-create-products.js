@@ -36,7 +36,7 @@ module.exports = {
         allowNull: false,
         defaultValue: 0
       },
-      format_id: {
+      program_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0

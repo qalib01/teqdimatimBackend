@@ -7,6 +7,7 @@ getValidOrderRequest = async (req, res, next) => {
     let cryptedSlug = decodeURIComponent(req.params.slug);
     let slugBytes = CryptoJS.AES.decrypt(cryptedSlug, process.env.CRYPTO_SECRET_KEY);
     let linkSlug = slugBytes.toString(CryptoJS.enc.Utf8);
+    console.log(linkSlug);
 
     const regex = /(?:customer_id=)([0-9a-fA-F-]+)(?:\/request_id=)([0-9a-fA-F-]+)/;
     const matches = linkSlug.match(regex);
@@ -25,18 +26,21 @@ getValidOrderRequest = async (req, res, next) => {
     let isCancelled = 'cancelled';
 
     const checkHasRequest = async (id) => {
-        let hasRequest = await db.customer_requests.findOne({
-            where: {
-                id,
-            }
-        });
+        let hasRequest = null;
+        if (id != undefined) {
+            hasRequest = await db.customer_requests.findOne({
+                where: {
+                    id,
+                }
+            });
+        }
         return hasRequest;
     }
 
     try {
         let hasRequest = await checkHasRequest(customerId);
 
-        if (hasRequest != null ? true : false) {
+        if (hasRequest != null || undefined ? true : false) {
             if (hasRequest.customer_status === isClicked || hasRequest.customer_status === isConfirmed) {
                 try {
                     let validRequest = await db.customer_requests.findOne({
@@ -111,7 +115,7 @@ getValidOrderRequest = async (req, res, next) => {
                 res.status(200).json(validRequest);
             }
         } else {
-            res.status(500).json(errorMessages.REQUEST_NOT_FOUND);
+            res.status(404).json( null );
         }
     } catch (error) {
         res.status(500).json(errorMessages.GENERAL_SERVER_ERROR);

@@ -15,9 +15,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'category_id',
         as: 'categories' // Use 'categories' as the alias
       });
-      products.belongsTo(models.product_formats, {
-        foreignKey: 'format_id',
-        as: 'formats' // Use 'formats' as the alias
+      products.belongsTo(models.product_programs, {
+        foreignKey: 'program_id',
+        as: 'programs' // Use 'formats' as the alias
       });
       products.belongsTo(models.product_languages, {
         foreignKey: 'language_id',
@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     cover_img: DataTypes.STRING,
     description: DataTypes.TEXT,
     category_id: DataTypes.INTEGER,
-    format_id: DataTypes.INTEGER,
+    program_id: DataTypes.INTEGER,
     language_id: DataTypes.INTEGER,
     size_id: DataTypes.INTEGER,
     slides: DataTypes.INTEGER,

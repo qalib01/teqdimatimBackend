@@ -2,7 +2,7 @@ const db = require('../models/index');
 
 let getDiscounts = async (req, res) => {
     try {
-        const discounts = await db.discounts.findAll({
+        const data = await db.discounts.findAll({
             where: {
                 status: true,
             },
@@ -12,11 +12,43 @@ let getDiscounts = async (req, res) => {
             attributes: [ 'name', 'key', 'percent', 'description' ],
         });
 
-        res.json(discounts);
+        res.json(data);
     } catch (error) {
         console.error('Error in /getCategories route:', error);
         res.status(500).json({ error: 'Internal server error!' });
     }
 }
 
-module.exports = { getDiscounts };
+let getPrograms = async (req, res) => {
+    try {
+        const data = await db.product_programs.findAll({
+            where: {
+                status: true,
+            },
+            attributes: [ 'name', 'key', 'scale' ],
+        });
+
+        res.json(data);
+    } catch (error) {
+        console.error('Error in /getCategories route:', error);
+        res.status(500).json({ error: 'Internal server error!' });
+    }
+}
+
+let getLanguages = async (req, res) => {
+    try {
+        const data = await db.product_languages.findAll({
+            where: {
+                status: true,
+            },
+            attributes: [ 'name', 'key', 'scale' ],
+        });
+
+        res.json(data);
+    } catch (error) {
+        console.error('Error in /getCategories route:', error);
+        res.status(500).json({ error: 'Internal server error!' });
+    }
+}
+
+module.exports = { getDiscounts, getPrograms, getLanguages };

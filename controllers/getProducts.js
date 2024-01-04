@@ -16,8 +16,8 @@ let getProducts = async (req, res) => {
                     }
                 },
                 {
-                    model: db.product_formats,
-                    as: 'formats',
+                    model: db.product_programs,
+                    as: 'programs',
                     attributes: [ 'name', 'key' ],
                 },
                 {
@@ -34,12 +34,8 @@ let getProducts = async (req, res) => {
             order: [
                 ['createdAt', 'DESC']
             ],
-            attributes: [ 'id', 'title', 'name', 'key', 'cover_img', 'description', 'price' ],
+            attributes: [ 'id', 'title', 'name', 'key', 'cover_img', 'description', 'slides', 'price' ],
         });
-
-        if (!products || products.length === 0) {
-            return res.status(404).json({ error: 'Not found!' });
-        }
 
         res.json(products);
     } catch (error) {
@@ -65,8 +61,8 @@ let getProductById = async (req, res) => {
                     }
                 },
                 {
-                    model: db.product_formats,
-                    as: 'formats',
+                    model: db.product_programs,
+                    as: 'programs',
                     attributes: [ 'name', 'key' ],
                 },
                 {
@@ -108,8 +104,8 @@ let getProductByCategory = async (req, res) => {
                     attributes: [ 'name', 'key', 'cover_img' ],
                 },
                 {
-                    model: db.product_formats,
-                    as: 'formats',
+                    model: db.product_programs,
+                    as: 'programs',
                     attributes: [ 'name', 'key' ],
                 },
                 {

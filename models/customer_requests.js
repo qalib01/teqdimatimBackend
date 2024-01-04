@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'discount',
       });
       customer_requests.hasMany(models.custom_order_requests, {
-        foreignKey: 'customer_request_id',
+        foreignKey: 'customerRequestId',
         as: 'customOrders',
       });
     }

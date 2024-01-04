@@ -11,7 +11,8 @@ const { postContactMessages } = require('../controllers/postContactMessages.js')
 const { checkUserDiscountRequests } = require('../controllers/checkUserRequests.js');
 const { postSubscribers } = require('../controllers/postSubscribers.js');
 const { getValidOrderRequest } = require('../controllers/getValidOrderRequest.js');
-const { updateUserRequest, createCustomOrder } = require('../controllers/updateUserRequest.js');
+const { updateUserRequest } = require('../controllers/updateRequest.js');
+const { createCustomOrder, createProductOrder } = require('../controllers/createOrder.js');
 const { getDiscounts } = require('../controllers/getElements.js');
 
 
@@ -59,8 +60,11 @@ router.get('/check_user_discount_request', originCheck, checkUserDiscountRequest
 /* UPDATE User Request data. */
 router.put('/update_user_request', originCheck, updateUserRequest);
 
-/* POST User Request data. */
+/* POST user custom order data. */
 router.post('/create_custom_order', originCheck, createCustomOrder);
+
+/* POST user product order data. */
+router.post('/create_product_order', originCheck, createProductOrder);
 
 /* GET popular_categories data. */
 router.get('/popular_categories', originCheck, getPopularCategories);

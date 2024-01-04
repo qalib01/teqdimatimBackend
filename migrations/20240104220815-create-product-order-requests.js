@@ -1,35 +1,32 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('product_formats', {
+    await queryInterface.createTable('product_order_requests', {
       id: {
         allowNull: false,
-        autoIncrement: true,
+        autoIncrement: false,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
-      name: {
+      productId: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'No Data'
       },
-      key: {
+      customerRequestId: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'no_data'
       },
-      status: {
-        type: Sequelize.BOOLEAN,
+      lastOrderPrice: {
+        type: Sequelize.DECIMAL(10,2),
         allowNull: false,
-        defaultValue: false
       },
-      createdBy: {
-        type: Sequelize.STRING,
+      additionalInformation: {
+        type: Sequelize.TEXT,
+        defaultValue: null,
+      },
+      preparedDate: {
+        type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: '00000000-0000-0000-00000000'
-      },
-      updatedBy: {
-        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
@@ -42,6 +39,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('product_formats');
+    await queryInterface.dropTable('product_order_requests');
   }
 };

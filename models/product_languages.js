@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   product_languages.init({
     name: DataTypes.STRING,
     key: DataTypes.STRING,
+    scale: DataTypes.INTEGER,
     status: DataTypes.BOOLEAN,
     createdBy: DataTypes.STRING,
     updatedBy: DataTypes.STRING

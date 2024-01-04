@@ -34,7 +34,6 @@ let getPopularCategories = async (req, res) => {
             ],
             attributes: [ 'category_id' ],
         });
-        console.log(products);
 
         const categories = await db.product_categories.findAll({
             where: {
