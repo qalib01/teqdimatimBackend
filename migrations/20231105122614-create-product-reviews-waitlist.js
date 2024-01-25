@@ -31,9 +31,9 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      ip: {
+      ipv4_adress: {
         type: Sequelize.STRING,
-        defaultValue: undefined
+        defaultValue: '0.0.0.0'
       },
       createdAt: {
         allowNull: false,

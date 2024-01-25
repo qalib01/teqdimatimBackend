@@ -10,7 +10,8 @@ let getTestimonials = async (req, res) => {
         });
 
         if (!testimonials || testimonials.length === 0) {
-            return res.status(404).json({ error: 'Not found!' });
+            // return res.status(404).json({ error: 'Not found!' });
+            return res.status(404);
         }
 
         res.json(testimonials);

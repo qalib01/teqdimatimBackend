@@ -33,7 +33,7 @@ module.exports = {
       },
       ipv4_adress: {
         type: Sequelize.STRING,
-        defaultValue: undefined
+        defaultValue: '0.0.0.0'
       },
       confirmedBy: {
         type: Sequelize.STRING,

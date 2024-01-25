@@ -13,7 +13,8 @@ let getCarousels = async (req, res) => {
         });
 
         if (!carousels || carousels.length === 0) {
-            return res.status(404).json({ error: 'Not found!' });
+            // return res.status(404).json({ error: 'Not found!' });
+            return res.status(404);
         }
 
         res.json(carousels);

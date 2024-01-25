@@ -19,7 +19,8 @@ let getTeamMembers = async (req, res) => {
         });
 
         if (!team_members || team_members.length === 0) {
-            return res.status(404).json({ error: 'Not found!' });
+            // return res.status(404).json({ error: 'Not found!' });
+            return res.status(404);
         }
 
         res.json(team_members);

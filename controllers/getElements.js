@@ -14,7 +14,7 @@ let getDiscounts = async (req, res) => {
 
         res.json(data);
     } catch (error) {
-        console.error('Error in /getCategories route:', error);
+        console.error('Error in /getDiscounts route:', error);
         res.status(500).json({ error: 'Internal server error!' });
     }
 }
@@ -30,7 +30,7 @@ let getPrograms = async (req, res) => {
 
         res.json(data);
     } catch (error) {
-        console.error('Error in /getCategories route:', error);
+        console.error('Error in /getPrograms route:', error);
         res.status(500).json({ error: 'Internal server error!' });
     }
 }
@@ -46,7 +46,7 @@ let getLanguages = async (req, res) => {
 
         res.json(data);
     } catch (error) {
-        console.error('Error in /getCategories route:', error);
+        console.error('Error in /getLanguages route:', error);
         res.status(500).json({ error: 'Internal server error!' });
     }
 }

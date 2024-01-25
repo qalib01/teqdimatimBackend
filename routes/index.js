@@ -9,7 +9,7 @@ const { getTeamMembers } = require('../controllers/getTeamMembers.js');
 const { getTestimonials } = require('../controllers/getTestimonials.js');
 const { postContactMessages } = require('../controllers/postContactMessages.js');
 const { checkUserDiscountRequests } = require('../controllers/checkUserRequests.js');
-const { postSubscribers } = require('../controllers/postSubscribers.js');
+const { postSubscribers, deleteSubscriber } = require('../controllers/postSubscribers.js');
 const { getValidOrderRequest } = require('../controllers/getValidOrderRequest.js');
 const { updateUserRequest } = require('../controllers/updateRequest.js');
 const { createCustomOrder, createProductOrder } = require('../controllers/createOrder.js');
@@ -53,6 +53,7 @@ router.post('/contact', originCheck, postContactMessages);
 
 /* POST subscribe data. */
 router.post('/subscribe', originCheck, postSubscribers);
+router.post('/unsubscribe', originCheck, deleteSubscriber);
 
 /* GET check_user_discount_request data. */
 router.get('/check_user_discount_request', originCheck, checkUserDiscountRequests);
