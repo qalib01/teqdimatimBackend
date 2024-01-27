@@ -58,6 +58,11 @@ var errorMessages = {
         message: 'Hər hansı bir müraciət tapılmadı. Xahiş olunur ki, linki yenidən yoxlayıb davam edəsiniz. Problem davam edərsə, bizimlə əlaqə saxlamağınızı xahiş edirik!'
     },
 
+    NOT_EMAIL_FOUND: {
+        key,
+        message: 'Belə bir elektron poçt ünvanı tapılmadı. Əgər daha əvvəl abunə olmusunuzsa, xahiş olunur ki, sizə göndərilən linki yenidən yoxlayasınız və ya bizimlə əlaqə saxlayasınız! '
+    },
+
     GENERAL_SERVER_ERROR: {
         key,
         message: 'Məlumatların yoxlanılması zamanı gözlənilməz xəta baş verdi. Xahiş olunur ki, daha sonra yenidən cəhd edəsiniz!'

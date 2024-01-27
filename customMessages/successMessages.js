@@ -26,6 +26,11 @@ var successMessages = {
         message: 'Mesajınız uğurla göndərildi. Müraciətiniz tezliklə cavablandırılacaqdır. Anlayışınız üçün təşəkkür edirik!'
     },
 
+    EMAIL_DELETED: {
+        key,
+        message: 'Elektron poçt ünvanınız uğurla silindi. Artıq abunəçimiz deyilsiniz!'
+    },
+
     SUBSCRIPTION_COMPLETED: {
         key,
         message: 'Abunəliyiniz uğurla tamamlandı. Artıq xəbərlər, endirimlər, yeniliklərlə bağlı məlumatları tez bir zamanda əldə edəcəksiniz!'

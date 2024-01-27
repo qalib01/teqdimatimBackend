@@ -53,7 +53,7 @@ router.post('/contact', originCheck, postContactMessages);
 
 /* POST subscribe data. */
 router.post('/subscribe', originCheck, postSubscribers);
-router.post('/unsubscribe', originCheck, deleteSubscriber);
+router.get('/unsubscribe', originCheck, deleteSubscriber);
 
 /* GET check_user_discount_request data. */
 router.get('/check_user_discount_request', originCheck, checkUserDiscountRequests);

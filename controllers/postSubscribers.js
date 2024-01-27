@@ -270,8 +270,36 @@ let postSubscribers = async (req, res) => {
   }
 }
 
+const getEmail = (data) => {
+  let cryptedSlug = decodeURIComponent(data);
+  let slugBytes = CryptoJS.AES.decrypt(cryptedSlug, process.env.CRYPTO_SECRET_KEY);
+  let email = slugBytes.toString(CryptoJS.enc.Utf8);
+  return email;
+}
+
 let deleteSubscriber = async (req, res) => {
-  console.log(req.query);
+  let email = getEmail(req.query.email);
+
+  try {
+    let hasEmail = await db.subscribers.findOne({
+      where: {
+        email,
+      }
+    });
+  
+    if (hasEmail) {
+      await db.subscribers.destroy({
+        where: {
+          email,
+        },
+      });
+      res.status(200).json(successMessages.EMAIL_DELETED);
+    } else {
+      res.status(404).json(errorMessages.NOT_EMAIL_FOUND);
+    }
+  } catch (error) {
+    res.status(500).json(errorMessages.GENERAL_SERVER_ERROR);
+  }
 }
 
 module.exports = { postSubscribers, deleteSubscriber };
