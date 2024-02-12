@@ -43,7 +43,7 @@ let getLanguages = async (req, res) => {
             },
             attributes: [ 'name', 'key', 'scale' ],
         });
-
+        
         res.json(data);
     } catch (error) {
         console.error('Error in /getLanguages route:', error);
@@ -51,4 +51,36 @@ let getLanguages = async (req, res) => {
     }
 }
 
-module.exports = { getDiscounts, getPrograms, getLanguages };
+let getUniversities = async (req, res) => {
+    try {
+        const data = await db.universities.findAll({
+            where: {
+                status: true,
+            },
+            attributes: [ 'id', 'name' ],
+        });
+
+        res.json(data);
+    } catch (error) {
+        console.error('Error in /getUniversities route:', error);
+        res.status(500).json({ error: 'Internal server error!' });
+    }
+}
+
+let getSocialMedias = async (req, res) => {
+    try {
+        const data = await db.social_medias.findAll({
+            where: {
+                status: true,
+            },
+            attributes: [ 'name', 'key', 'link', 'icon' ],
+        });
+
+        res.json(data);
+    } catch (error) {
+        console.error('Error in /getSocialMedias route:', error);
+        res.status(500).json({ error: 'Internal server error!' });
+    }
+}
+
+module.exports = { getDiscounts, getPrograms, getLanguages, getUniversities, getSocialMedias };

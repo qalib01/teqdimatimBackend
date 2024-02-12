@@ -11,14 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      team_member_social_medias.hasOne(models.team_members, {
-        foreignKey: 'id',
-      })
+      // team_member_social_medias.hasOne(models.team_members, {
+      //   foreignKey: 'id',
+      // })
     }
   }
   team_member_social_medias.init({
     member_id: DataTypes.STRING,
-    name: DataTypes.STRING,
+    social_media_id: DataTypes.INTEGER,
     username: DataTypes.STRING,
     createdBy: DataTypes.STRING,
     updatedBy: DataTypes.STRING

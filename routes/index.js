@@ -9,11 +9,11 @@ const { getTeamMembers } = require('../controllers/getTeamMembers.js');
 const { getTestimonials } = require('../controllers/getTestimonials.js');
 const { postContactMessages } = require('../controllers/postContactMessages.js');
 const { checkUserDiscountRequests } = require('../controllers/checkUserRequests.js');
-const { postSubscribers, deleteSubscriber } = require('../controllers/postSubscribers.js');
+const { postSubscribers, deleteSubscriber } = require('../controllers/subscribers.js');
 const { getValidOrderRequest } = require('../controllers/getValidOrderRequest.js');
 const { updateUserRequest } = require('../controllers/updateRequest.js');
 const { createCustomOrder, createProductOrder } = require('../controllers/createOrder.js');
-const { getDiscounts } = require('../controllers/getElements.js');
+const { getDiscounts, getLanguages, getPrograms, getUniversities } = require('../controllers/getElements.js');
 
 
 
@@ -43,7 +43,7 @@ router.get('/product/find_by_category', originCheck, getProductByCategory);
 router.get('/carousels', originCheck, getCarousels);
 
 /* GET team_members data. */
-router.get('/team_members', originCheck, getTeamMembers );
+router.get('/team_members', originCheck, getTeamMembers);
 
 /* GET testimonials data. */
 router.get('/testimonials', originCheck, getTestimonials);
@@ -71,5 +71,10 @@ router.post('/create_product_order', originCheck, createProductOrder);
 router.get('/popular_categories', originCheck, getPopularCategories);
 
 router.get('/order/:slug', originCheck, getValidOrderRequest);
+
+
+router.get('/get_languages', originCheck, getLanguages);
+router.get('/get_programs', originCheck, getPrograms);
+router.get('/get_universities', originCheck, getUniversities);
 
 module.exports = router;

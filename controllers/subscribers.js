@@ -15,7 +15,6 @@ const guidGenerate = () => {
 
 let postSubscribers = async (req, res) => {
   let inputData = req.body;
-  console.log(inputData);
 
   const generateSecureToken = (token) => {
     // const hash = crypto.createHash('sha256').update(token).digest('hex'); // SHA-256 example
@@ -245,15 +244,12 @@ let postSubscribers = async (req, res) => {
     }
   }
 
-
-
   try {
     let hasUser = await db.subscribers.findOne({
       where: {
         email: inputData.email,
       }
-    })
-    console.log(hasUser);
+    });
 
     if (hasUser) {
       res.status(409).json(errorMessages.SUBSCRIPTION_EMAIL_CONFLICT);
@@ -295,7 +291,7 @@ let deleteSubscriber = async (req, res) => {
       });
       res.status(200).json(successMessages.EMAIL_DELETED);
     } else {
-      res.status(404).json(errorMessages.NOT_EMAIL_FOUND);
+      res.status(404).json(errorMessages.EMAIL_NOT_FOUND);
     }
   } catch (error) {
     res.status(500).json(errorMessages.GENERAL_SERVER_ERROR);

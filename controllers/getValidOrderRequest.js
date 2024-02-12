@@ -7,7 +7,6 @@ getValidOrderRequest = async (req, res, next) => {
     let cryptedSlug = decodeURIComponent(req.params.slug);
     let slugBytes = CryptoJS.AES.decrypt(cryptedSlug, process.env.CRYPTO_SECRET_KEY);
     let linkSlug = slugBytes.toString(CryptoJS.enc.Utf8);
-    console.log(linkSlug);
 
     const regex = /(?:customer_id=)([0-9a-fA-F-]+)(?:\/request_id=)([0-9a-fA-F-]+)/;
     const matches = linkSlug.match(regex);

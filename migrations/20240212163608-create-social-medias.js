@@ -1,32 +1,32 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('team_member_social_medias', {
+    await queryInterface.createTable('social_medias', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      member_id: {
+      name: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: false
       },
-      social_media_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      username: {
+      key: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: false
       },
-      createdBy: {
+      link: {
         type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: '00000000-0000-0000-00000000'
+        allowNull: false
       },
-      updatedBy: {
+      icon: {
         type: Sequelize.STRING,
+        allowNull: false
+      },
+      status: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       createdAt: {
         allowNull: false,
@@ -39,6 +39,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('team_member_social_medias');
+    await queryInterface.dropTable('social_medias');
   }
 };
