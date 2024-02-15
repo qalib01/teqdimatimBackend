@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      contact_messages.hasOne(models.contact_statuses, {
+        foreignKey: 'status_id',
+        as: 'status'
+      });
     }
   }
   contact_messages.init({

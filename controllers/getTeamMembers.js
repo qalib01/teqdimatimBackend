@@ -6,15 +6,24 @@ let getTeamMembers = async (req, res) => {
             where: {
                 status: true,
             },
-            // include: [
-            //     {
-            //         model: db.team_member_social_medias,
-            //         as: 'social_medias',
-            //         attributes: [
-            //             'name', 'username'
-            //         ]
-            //     }
-            // ],
+            include: [
+                {
+                    model: db.team_member_social_medias,
+                    as: 'social_medias',
+                    attributes: [
+                        'username'
+                    ],
+                    include: [
+                        {
+                            model: db.social_medias,
+                            as: 'media',
+                            attributes: [
+                                'name', 'key', 'link', 'icon'
+                            ]
+                        }
+                    ]
+                }
+            ],
             attributes: [ 'name', 'surname', 'profession', 'profile_photo' ],
         });
 

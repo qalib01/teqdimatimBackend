@@ -17,8 +17,17 @@ module.exports = (sequelize, DataTypes) => {
         as: 'discount',
       });
       customer_requests.hasMany(models.custom_order_requests, {
-        foreignKey: 'customerRequestId',
-        as: 'customOrders',
+        foreignKey: 'customer_request_id',
+        as: 'custom_orders',
+      });
+      customer_requests.hasMany(models.product_order_requests, {
+        foreignKey: 'customer_request_id',
+        as: 'product_orders',
+      });
+      customer_requests.hasOne(models.universities, {
+        foreignKey: 'id',
+        sourceKey: 'university_id',
+        as: 'university',
       });
     }
   }
@@ -27,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     surname: DataTypes.STRING,
     email: DataTypes.STRING,
     phone: DataTypes.STRING,
-    university: DataTypes.STRING,
+    university_id: DataTypes.STRING,
     speciality: DataTypes.STRING,
     degree: DataTypes.STRING,
     course: DataTypes.STRING,

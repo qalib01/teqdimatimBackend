@@ -11,7 +11,6 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'No data',
       },
       surname: {
         type: Sequelize.STRING,
@@ -19,12 +18,11 @@ module.exports = {
       email: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'no_data'
       },
       phone: {
         type: Sequelize.STRING,
       },
-      university: {
+      university_id: {
         type: Sequelize.STRING,
       },
       speciality: {
@@ -46,12 +44,9 @@ module.exports = {
       customer_status: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'no_value'
       },
       admin_status: {
         type: Sequelize.STRING,
-        allowNull: false,
-        defaultValue: 'no_value'
       },
       createdAt: {
         allowNull: false,

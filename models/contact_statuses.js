@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      contact_statuses.belongsTo(models.contact_messages, {
+        foreignKey: 'id'
+      });
     }
   }
   contact_statuses.init({

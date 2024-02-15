@@ -11,9 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // team_member_social_medias.hasOne(models.team_members, {
-      //   foreignKey: 'id',
-      // })
+      team_member_social_medias.belongsTo(models.team_members, {
+        foreignKey: 'id',
+      })
+      team_member_social_medias.hasOne(models.social_medias, {
+        foreignKey: 'id',
+        sourceKey: 'social_media_id',
+        as: 'media',
+      })
     }
   }
   team_member_social_medias.init({

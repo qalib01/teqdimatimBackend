@@ -12,22 +12,22 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      subjectName: {
+      subject_name: {
         type: Sequelize.STRING,
         allowNull: false,
         defaultValue: 'No data',
       },
-      topicName: {
+      topic_name: {
         type: Sequelize.STRING,
         allowNull: false,
         defaultValue: 'No data',
       },
-      orderPrice: {
+      order_price: {
         type: Sequelize.DECIMAL(10,2),
         allowNull: false,
         default: 0,
       },
-      lastOrderPrice: {
+      last_order_price: {
         type: Sequelize.DECIMAL(10,2),
         allowNull: false,
         default: 0,
@@ -37,7 +37,7 @@ module.exports = {
         allowNull: false,
         defaultValue: 'no_data',
       },
-      pageCount: {
+      page_count: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
@@ -47,11 +47,11 @@ module.exports = {
         allowNull: false,
         defaultValue: 'no_data',
       },
-      additionalInformation: {
+      additional_information: {
         type: Sequelize.TEXT,
         defaultValue: null,
       },
-      preparedDate: {
+      prepared_date: {
         type: Sequelize.DATE,
         allowNull: false,
       },

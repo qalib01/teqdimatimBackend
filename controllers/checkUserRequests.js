@@ -45,6 +45,7 @@ let checkUserDiscountRequests = async (req, res) => {
                 email,
             },
         });
+        console.log(hasActiveRequest);
 
         return hasActiveRequest === null ? true : false;
     }
@@ -54,7 +55,7 @@ let checkUserDiscountRequests = async (req, res) => {
             include: [
                 {
                     model: sequelize.model('custom_orders'),
-                    as: 'customOrders',
+                    as: 'custom_orders',
                 }
             ],
             where: {

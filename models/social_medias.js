@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      social_medias.belongsTo(models.team_member_social_medias, {
+        foreignKey: 'social_media_id',
+      })
     }
   }
   social_medias.init({

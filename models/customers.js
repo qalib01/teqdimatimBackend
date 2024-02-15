@@ -13,7 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       customers.hasMany(models.custom_orders, {
         foreignKey: 'customer_id',
-        as: 'customOrders'
+        as: 'custom_orders'
+      });
+      customers.hasOne(models.universities, {
+        foreignKey: 'id',
+        sourceKey: 'university_id',
+        as: 'university',
       });
     }
   }
@@ -22,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     surname: DataTypes.STRING,
     email: DataTypes.STRING,
     phone: DataTypes.STRING,
-    university: DataTypes.STRING,
+    university_id: DataTypes.STRING,
     speciality: DataTypes.STRING,
     degree: DataTypes.STRING,
     course: DataTypes.STRING,

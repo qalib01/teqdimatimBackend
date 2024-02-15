@@ -18,15 +18,15 @@ module.exports = (sequelize, DataTypes) => {
   }
   custom_orders.init({
     customer_id: DataTypes.STRING,
-    subjectName: DataTypes.STRING,
-    topicName: DataTypes.STRING,
-    orderPrice: DataTypes.DECIMAL(10,2),
-    lastOrderPrice: DataTypes.DECIMAL(10,2),
+    subject_name: DataTypes.STRING,
+    topic_name: DataTypes.STRING,
+    order_price: DataTypes.DECIMAL(10,2),
+    last_order_price: DataTypes.DECIMAL(10,2),
     language: DataTypes.STRING,
-    pageCount: DataTypes.INTEGER,
+    page_count: DataTypes.INTEGER,
     program: DataTypes.STRING,
-    additionalInformation: DataTypes.TEXT,
-    preparedDate: DataTypes.DATE,
+    additional_information: DataTypes.TEXT,
+    prepared_date: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'custom_orders',

@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   custom_order_requests.init({
-    customerRequestId: DataTypes.STRING,
+    customer_request_id: DataTypes.STRING,
     subjectName: DataTypes.STRING,
     topicName: DataTypes.STRING,
     orderPrice: DataTypes.DECIMAL(10,2),
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     language: DataTypes.STRING,
     pageCount: DataTypes.INTEGER,
     program: DataTypes.STRING,
-    additionalInformation: DataTypes.TEXT,
+    additional_information: DataTypes.TEXT,
     preparedDate: DataTypes.DATE,
   }, {
     sequelize,

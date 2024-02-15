@@ -24,7 +24,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      university: {
+      university_id: {
         type: Sequelize.STRING,
         allowNull: false,
       },

@@ -8,23 +8,23 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.STRING
       },
-      productId: {
+      product_id: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      customerRequestId: {
+      customer_request_id: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      lastOrderPrice: {
+      last_order_price: {
         type: Sequelize.DECIMAL(10,2),
         allowNull: false,
       },
-      additionalInformation: {
+      additional_information: {
         type: Sequelize.TEXT,
         defaultValue: null,
       },
-      preparedDate: {
+      prepared_date: {
         type: Sequelize.DATE,
         allowNull: false,
       },
