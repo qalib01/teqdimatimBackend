@@ -1,45 +1,28 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('customer_requests', {
+    await queryInterface.createTable('product_orders', {
       id: {
         allowNull: false,
         autoIncrement: false,
         primaryKey: true,
         type: Sequelize.STRING
       },
-      name: {
+      product_id: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      surname: {
-        type: Sequelize.STRING,
-      },
-      email: {
+      customer_id: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      phone: {
-        type: Sequelize.STRING,
-      },
-      university_id: {
-        type: Sequelize.STRING,
-      },
-      speciality: {
-        type: Sequelize.STRING,
-      },
-      degree: {
-        type: Sequelize.STRING,
-      },
-      course: {
-        type: Sequelize.STRING,
-      },
-      group: {
-        type: Sequelize.STRING,
-      },
-      discount_key: {
-        type: Sequelize.STRING,
+      last_price: {
+        type: Sequelize.DECIMAL(10,2),
         allowNull: false,
+      },
+      additional_information: {
+        type: Sequelize.TEXT,
+        defaultValue: null,
       },
       customer_status: {
         type: Sequelize.STRING,
@@ -47,6 +30,13 @@ module.exports = {
       },
       admin_status: {
         type: Sequelize.STRING,
+      },
+      status: {
+        type: Sequelize.STRING,
+      },
+      prepared_date: {
+        type: Sequelize.DATE,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
@@ -59,6 +49,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('customer_requests');
+    await queryInterface.dropTable('product_orders');
   }
 };

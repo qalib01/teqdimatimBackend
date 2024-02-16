@@ -7,13 +7,28 @@ let { errorMessages } = require('../customMessages/errorMessages');
 let { successMessages } = require('../customMessages/successMessages');
 
 let checkUserDiscountRequests = async (req, res) => {
-    const checkIsCustomer = async (email) => {
-        let isCustomer = await db.customers.findOne({
+    const getData = async (email) => {
+        let data = await db.customers.findOne({
+            include: [
+                {
+                    model: sequelize.model('custom_orders'),
+                    as: 'custom_orders'
+                },
+                {
+                    model: sequelize.model('product_orders'),
+                    as: 'product_orders',
+                },
+            ],
             where: {
                 email,
+                status: 'active'
             },
         });
-        return isCustomer !== null ? true : false;
+        return data;
+    }
+
+    const checkIsCustomer = async (data) => {
+        return (data && (data.custom_orders.length > 0 || data.product_orders.length > 0)) ? true : false;
     }
 
     const checkDailyCustomerRequest = async (email) => {
@@ -39,30 +54,8 @@ let checkUserDiscountRequests = async (req, res) => {
         return checkDayRequest || checkEmailStatus;
     }
 
-    const checkActiveRequest = async (email) => {
-        let hasActiveRequest = await db.customer_requests.findOne({
-            where: {
-                email,
-            },
-        });
-        console.log(hasActiveRequest);
-
-        return hasActiveRequest === null ? true : false;
-    }
-
-    const getAllOrders = async (email) => {
-        let orders = await db.customers.findAll({
-            include: [
-                {
-                    model: sequelize.model('custom_orders'),
-                    as: 'custom_orders',
-                }
-            ],
-            where: {
-                email,
-            }
-        });
-        return orders ? orders.length : 0;
+    const checkActiveRequest = async (data) => {
+        return (data && ((data.custom_orders && data.custom_orders.some(order => order.status !== 'finished')) || (data.product_orders && data.product_orders.some(order => order.status !== 'finished')))) ? true  : false;
     }
 
     const calculateDiscountPercent = (quantity) => {
@@ -85,8 +78,6 @@ let checkUserDiscountRequests = async (req, res) => {
     }
 
     const generateSecureToken = (token) => {
-        // const hash = crypto.createHash('sha256').update(token).digest('hex'); // SHA-256 example
-        // return hash;
         let encryptedSlug = CryptoJS.AES.encrypt(token, process.env.CRYPTO_SECRET_KEY).toString();
         return encryptedSlug;
     }
@@ -206,85 +197,86 @@ let checkUserDiscountRequests = async (req, res) => {
 
     try {
         let { name, email, invitedEmail, discount_key } = req.query;
-        let sendAvaliable = await checkDailyCustomerRequest(email);
+        let isSendAvaliable = await checkDailyCustomerRequest(email);
 
-        if (sendAvaliable) {
-            let hasActiveRequest = await checkActiveRequest(email);
+        if (isSendAvaliable) {
+            let allData = await getData(email);
+            let isCustomer =  await checkIsCustomer(allData);
 
-            if (hasActiveRequest) {
-                let isCustomer = await checkIsCustomer(email);
-                let allRequests = await getAllOrders(email);
-
-                if (discount_key === 'ilk_sifaris') {
-                    switch (isCustomer) {
-                        case true:
-                            res.status(409).json(errorMessages.DISCOUNT_ILK_SIFARIS_CONFLICT);
-                            break;
-                        default:
-                            let discount = await getDiscountInformation(discount_key);
-                            let emailRes = await sendEmail(name, email, '', discount);
-                            switch (emailRes) {
-                                case true:
-                                    res.status(200).json(successMessages.DISCOUNT_ILK_SIFARIS);
-                                    break;
-                                default:
-                                    res.status(500).json(errorMessages.DISCOUNT_EMAIL_SEND);
-                                    break;
-                            }
-                            break;
-                    }
-                } else if (discount_key === 'dostu_devet') {
-                    switch (isCustomer) {
-                        case true:
-                            let isCustomer = await checkIsCustomer(invitedEmail);
-                            switch (isCustomer) {
-                                case true:
-                                    res.status(409).json(errorMessages.DISCOUNT_DOSTU_DEVET_CONFLICT);
-                                    break;
-                                default:
-                                    let discount = await getDiscountInformation(discount_key);
-                                    let emailRes = await sendEmail(name, '', invitedEmail, discount);
-                                    switch (emailRes) {
-                                        case true:
-                                            res.status(200).json(successMessages.DISCOUNT_DOSTU_DEVET);
-                                            break;
-                                        default:
-                                            res.status(500).json(errorMessages.DISCOUNT_EMAIL_SEND);
-                                            break;
-                                    }
-                                    break;
-                            }
-                            break;
-                        default:
-                            res.status(403).json(errorMessages.DISCOUNT_NOT_ORDERS_YET);
-                            break;
-                    }
-                } else if (discount_key === 'novbeti_sifaris') {
-                    switch (isCustomer) {
-                        case true:
-                            let percent = calculateDiscountPercent(allRequests.length);
-                            let discount = await getDiscountInformation(discount_key, percent);
-                            let emailRes = await sendEmail(name, email, '', discount);
-                            switch (emailRes) {
-                                case true:
-                                    res.status(200).json(successMessages.DISCOUNT_NOVBETI_SIFARIS);
-                                    break;
-                                default:
-                                    res.status(500).json(errorMessages.DISCOUNT_EMAIL_SEND);
-                                    break;
-                            }
-                            break;
-                        default:
-                            res.status(403).json(errorMessages.DISCOUNT_NOT_ORDERS_YET);
-                            break;
-                    }
-                } else {
-                    res.status(404).json(errorMessages.DISCOUNT_NOT_TRUE_OPTION);
+            if (discount_key === 'ilk_sifaris') {
+                switch (isCustomer) {
+                    case false:
+                        let discount = await getDiscountInformation(discount_key);
+                        let emailRes = await sendEmail(name, email, '', discount);
+                        switch (emailRes) {
+                            case true:
+                                res.status(200).json(successMessages.DISCOUNT_ILK_SIFARIS);
+                                break;
+                            default:
+                                res.status(500).json(errorMessages.DISCOUNT_EMAIL_SEND);
+                                break;
+                        }
+                        break;
+                    default:
+                        res.status(409).json(errorMessages.DISCOUNT_ILK_SIFARIS_CONFLICT);
+                        break;
+                }
+            } else if (discount_key === 'dostu_devet') {
+                switch (isCustomer) {
+                    case true:
+                        let isCustomer = await checkIsCustomer(invitedEmail);
+                        switch (isCustomer) {
+                            case true:
+                                let discount = await getDiscountInformation(discount_key);
+                                let emailRes = await sendEmail(name, '', invitedEmail, discount);
+                                switch (emailRes) {
+                                    case true:
+                                        res.status(200).json(successMessages.DISCOUNT_DOSTU_DEVET);
+                                        break;
+                                    default:
+                                        res.status(500).json(errorMessages.DISCOUNT_EMAIL_SEND);
+                                        break;
+                                }
+                                break;
+                            default:
+                                res.status(409).json(errorMessages.DISCOUNT_DOSTU_DEVET_CONFLICT);
+                                break;
+                        }
+                        break;
+                    default:
+                        res.status(403).json(errorMessages.DISCOUNT_NOT_ORDERS_YET);
+                        break;
+                }
+            } else if (discount_key === 'novbeti_sifaris') {
+                switch (isCustomer) {
+                    case true:
+                        let hasActiveRequest = await checkActiveRequest(allData);
+                        switch (hasActiveRequest) {
+                            case false:
+                                let percent = calculateDiscountPercent(allData ? allData.product_orders.length + allData.custom_orders.length : 0);
+                                let discount = await getDiscountInformation(discount_key, percent);
+                                let emailRes = await sendEmail(name, email, '', discount);
+                                switch (emailRes) {
+                                    case true:
+                                        res.status(200).json(successMessages.DISCOUNT_NOVBETI_SIFARIS);
+                                        break;
+                                    default:
+                                        res.status(500).json(errorMessages.DISCOUNT_EMAIL_SEND);
+                                        break;
+                                }
+                                break;
+                            default:
+                                res.status(409).json(errorMessages.USER_HAVE_ACTIVE_REQUEST);
+                                break;
+                        }
+                        break;
+                    default:
+                        res.status(403).json(errorMessages.DISCOUNT_NOT_ORDERS_YET);
+                        break;
                 }
             } else {
-                res.status(409).json(errorMessages.USER_HAVE_ACTIVE_REQUEST);
+                res.status(404).json(errorMessages.DISCOUNT_NOT_TRUE_OPTION);
             }
-
         } else {
             res.status(409).json(errorMessages.EMAIL_DAILY_LIMIT);
         }

@@ -24,7 +24,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      university_id: {
+      university_key: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -41,6 +41,10 @@ module.exports = {
         allowNull: false,
       },
       group: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      status: {
         type: Sequelize.STRING,
         allowNull: false,
       },

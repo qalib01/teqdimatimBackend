@@ -21,8 +21,6 @@ let getFaqs = async (req, res) => {
             return res.status(404).json({ error: 'Not found!' });
         }
 
-        const ip = req.connection.remoteAddress;
-        console.log('ip: ', ip);
         res.json(faq_groups);
     } catch (error) {
         console.error('Error in /faqs route:', error);

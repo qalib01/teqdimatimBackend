@@ -15,9 +15,17 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'customer_id',
         as: 'custom_orders'
       });
+      customers.hasMany(models.product_orders, {
+        foreignKey: 'customer_id',
+        as: 'product_orders'
+      });
+      customers.hasMany(models.customer_discounts, {
+        foreignKey: 'customer_id',
+        as: 'product_discounts'
+      });
       customers.hasOne(models.universities, {
         foreignKey: 'id',
-        sourceKey: 'university_id',
+        sourceKey: 'university_key',
         as: 'university',
       });
     }
@@ -27,11 +35,12 @@ module.exports = (sequelize, DataTypes) => {
     surname: DataTypes.STRING,
     email: DataTypes.STRING,
     phone: DataTypes.STRING,
-    university_id: DataTypes.STRING,
+    university_key: DataTypes.STRING,
     speciality: DataTypes.STRING,
     degree: DataTypes.STRING,
     course: DataTypes.STRING,
     group: DataTypes.STRING,
+    status: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'customers',

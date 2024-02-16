@@ -27,12 +27,12 @@ module.exports = {
         allowNull: false,
         default: 0,
       },
-      last_order_price: {
+      last_price: {
         type: Sequelize.DECIMAL(10,2),
         allowNull: false,
         default: 0,
       },
-      language: {
+      language_key: {
         type: Sequelize.STRING,
         allowNull: false,
         defaultValue: 'no_data',
@@ -42,7 +42,7 @@ module.exports = {
         allowNull: false,
         defaultValue: 0,
       },
-      program: {
+      program_key: {
         type: Sequelize.STRING,
         allowNull: false,
         defaultValue: 'no_data',
@@ -50,6 +50,16 @@ module.exports = {
       additional_information: {
         type: Sequelize.TEXT,
         defaultValue: null,
+      },
+      customer_status: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      admin_status: {
+        type: Sequelize.STRING,
+      },
+      status: {
+        type: Sequelize.STRING,
       },
       prepared_date: {
         type: Sequelize.DATE,

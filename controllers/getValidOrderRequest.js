@@ -38,7 +38,6 @@ getValidOrderRequest = async (req, res, next) => {
 
     try {
         let hasRequest = await checkHasRequest(customerId);
-
         if (hasRequest != null || undefined ? true : false) {
             if (hasRequest.customer_status === isClicked || hasRequest.customer_status === isConfirmed) {
                 try {
@@ -53,10 +52,11 @@ getValidOrderRequest = async (req, res, next) => {
                         where: {
                             id: customerId,
                         },
-                        attributes: ['name', 'surname', 'email', 'phone', 'university', 'speciality', 'degree', 'course', 'group'],
+                        attributes: ['name', 'surname', 'email', 'phone', 'university_key', 'speciality', 'degree', 'course', 'group'],
                     });
                     res.status(200).json(validRequest);
                 } catch (error) {
+                    console.log('test');
                     res.status(500).json(errorMessages.GENERAL_SERVER_ERROR);
                 }
             } else if (hasRequest && hasRequest.customer_status === isRequested) {
@@ -103,7 +103,7 @@ getValidOrderRequest = async (req, res, next) => {
                         {
                             model: sequelize.model('discounts'),
                             as: 'discount',
-                            attributes: ['name', 'key'],
+                            attributes: ['name', 'key', 'percent'],
                         }
                     ],
                     where: {
@@ -114,7 +114,7 @@ getValidOrderRequest = async (req, res, next) => {
                 res.status(200).json(validRequest);
             }
         } else {
-            res.status(404).json( null );
+            res.status(404);
         }
     } catch (error) {
         res.status(500).json(errorMessages.GENERAL_SERVER_ERROR);

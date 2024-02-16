@@ -21,10 +21,11 @@ const getIDs = (data) => {
 
 let createCustomOrder = async (req, res, next) => {
     let data = req.query;
+    console.log(data);
     let { customerId, requestId } = getIDs(data);
 
     try {
-        let hasOrder = await db.custom_order_requests.findOne({
+        let hasOrder = await db.custom_orders.findOne({
             where: {
                 id: requestId,
             }
@@ -44,16 +45,16 @@ let createCustomOrder = async (req, res, next) => {
             });
             await db.custom_order_requests.create({
                 id: requestId,
-                customerRequestId: customerId,
-                subjectName: data.subjectName,
-                topicName: data.topicName,
-                orderPrice: data.orderPrice,
-                lastOrderPrice: data.lastOrderPrice,
+                customer_request_id: customerId,
+                subject_name: data.subjectName,
+                topic_name: data.topicName,
+                order_price: data.orderPrice,
+                last_order_price: data.lastOrderPrice,
                 language: data.language,
-                pageCount: data.pageCount,
+                page_count: data.pageCount,
                 program: data.program,
-                additionalInformation: data.additionalInformation,
-                preparedDate: data.preparedDate,
+                additional_information: data.additionalInformation,
+                prepared_date: data.preparedDate,
             });
             res.status(200).json( successMessages.ORDER_REQUEST_SUCCESSFULL );
         }
@@ -89,12 +90,12 @@ let createProductOrder = async (req, res, next) => {
             });
             await db.product_order_requests.create({
                 id: requestId,
-                productId: data.productId,
-                customerRequestId: customerId,
-                subjectName: data.subjectName,
-                lastOrderPrice: data.lastOrderPrice,
-                additionalInformation: data.additionalInformation,
-                preparedDate: data.preparedDate,
+                product_id: data.productId,
+                customer_request_id: customerId,
+                subject_name: data.subjectName,
+                last_order_price: data.lastOrderPrice,
+                additional_information: data.additionalInformation,
+                prepared_date: data.preparedDate,
             });
             res.status(200).json( successMessages.ORDER_REQUEST_SUCCESSFULL );
         }

@@ -27,7 +27,6 @@ let getPrograms = async (req, res) => {
             },
             attributes: [ 'name', 'key', 'scale' ],
         });
-
         res.json(data);
     } catch (error) {
         console.error('Error in /getPrograms route:', error);
@@ -43,7 +42,6 @@ let getLanguages = async (req, res) => {
             },
             attributes: [ 'name', 'key', 'scale' ],
         });
-        
         res.json(data);
     } catch (error) {
         console.error('Error in /getLanguages route:', error);
@@ -57,7 +55,10 @@ let getUniversities = async (req, res) => {
             where: {
                 status: true,
             },
-            attributes: [ 'id', 'name' ],
+            order: [
+                [ 'name', 'ASC' ]
+            ],
+            attributes: [ 'id', 'name', 'key' ],
         });
 
         res.json(data);

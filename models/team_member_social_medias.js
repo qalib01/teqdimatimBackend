@@ -15,15 +15,15 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id',
       })
       team_member_social_medias.hasOne(models.social_medias, {
-        foreignKey: 'id',
-        sourceKey: 'social_media_id',
+        foreignKey: 'key',
+        sourceKey: 'social_media_key',
         as: 'media',
       })
     }
   }
   team_member_social_medias.init({
     member_id: DataTypes.STRING,
-    social_media_id: DataTypes.INTEGER,
+    social_media_key: DataTypes.STRING,
     username: DataTypes.STRING,
     createdBy: DataTypes.STRING,
     updatedBy: DataTypes.STRING

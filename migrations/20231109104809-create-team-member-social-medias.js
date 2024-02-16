@@ -12,8 +12,8 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      social_media_id: {
-        type: Sequelize.INTEGER,
+      social_media_key: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       username: {

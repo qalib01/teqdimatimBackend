@@ -18,17 +18,17 @@ let updateUserRequest = async (req, res, next) => {
     }
 
     try {
-        let customerRequest = await db.customer_requests.findOne({
+        let isCustomer = await db.customers.findOne({
             where: {
                 id: customerId,
             }
         });
     
-        if (customerRequest.customer_status !== 'confirmed') {
+        if (isCustomer.customer_status !== 'confirmed') {
             await db.customer_requests.update({
                 surname: req.query.surname,
                 phone: req.query.phone,
-                university: req.query.university,
+                university_key: req.query.university_key,
                 speciality: req.query.speciality,
                 degree: req.query.degree,
                 course: req.query.course,
@@ -82,18 +82,19 @@ let createCustomOrder = async (req, res, next) => {
                     id: customerId,
                 },
             });
+            console.log('Burda error olur!!!!');
             await db.custom_order_requests.create({
                 id: requestId,
                 customer_request_id: customerId,
-                subjectName: data.subjectName,
-                topicName: data.topicName,
-                orderPrice: data.orderPrice,
-                lastOrderPrice: data.lastOrderPrice,
+                subject_name: data.subjectName,
+                topic_name: data.topicName,
+                order_price: data.orderPrice,
+                last_order_price: data.lastOrderPrice,
                 language: data.language,
-                pageCount: data.pageCount,
+                page_count: data.pageCount,
                 program: data.program,
-                additionalInformation: data.additionalInformation,
-                preparedDate: data.preparedDate,
+                additional_information: data.additionalInformation,
+                prepared_date: data.preparedDate,
             });
             res.status(200).json( successMessages.ORDER_REQUEST_SUCCESSFULL );
         }
