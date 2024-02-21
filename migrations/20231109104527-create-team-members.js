@@ -31,7 +31,7 @@ module.exports = {
       profile_photo: {
         type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: 'default_user.png'
+        defaultValue: 'default_user.jpg'
       },
       status: {
         type: Sequelize.BOOLEAN,

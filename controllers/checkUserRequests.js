@@ -18,10 +18,19 @@ let checkUserDiscountRequests = async (req, res) => {
                     model: sequelize.model('product_orders'),
                     as: 'product_orders',
                 },
+                {
+                    model: sequelize.model('customer_discounts'),
+                    as: 'discounts',
+                    include: [
+                        {
+                            model: sequelize.model('discounts'),
+                            as: 'discount'
+                        }
+                    ],
+                },
             ],
             where: {
                 email,
-                status: 'active'
             },
         });
         return data;
@@ -103,17 +112,18 @@ let checkUserDiscountRequests = async (req, res) => {
                 });
         }
         let id = guidGenerate();
-        let customerId = guidGenerate();
+        let customer = await getData(discount.key === 'dostu_devet' ? invitedEmail : email);
+        let customerId = customer != null ? customer.id : guidGenerate();
         let requestId = guidGenerate();
         let linkSlug = `/customer_id=${customerId}/request_id=${requestId}`;
 
         let emailAdress;
         let emailSubject;
         let emailContent;
+        let slug = generateSecureToken(linkSlug);
 
         try {
             if (discount.key === 'ilk_sifaris') {
-                let slug = generateSecureToken(linkSlug);
                 emailAdress = email;
                 emailSubject = `Sorğulanmış məlumatların nəticəsi barədə detallı məlumat`;
                 emailContent = `Hörmətli ${name}. Sorğunuz tesdiqlendi. Asagidaki linke daxil olaraq endirimi istifade ede bilersiniz! Endiriminiz: ${discount.percent}% Link: www.teqdimatim.az/order/${encodeURIComponent(slug)}`;
@@ -124,12 +134,12 @@ let checkUserDiscountRequests = async (req, res) => {
             } else if (discount.key === 'novbeti_sifaris') {
                 emailAdress = email;
                 emailSubject = `Endirim sizi gözləyir!`;
-                emailContent = `Hörmətli, ${name}. Sizin üçün təyin olunmuş endirim ${discount.percent}%'dir. Endirimdən faydalanmaq üçün aşağıdakı linkə keçid edə bilərsiniz. Endirimlərin hesablanma qaydasıyla tanış olmaq üçün https://teqdimatim.az/faqs səhifəsini ziyarət edə bilərsiniz!`;
+                emailContent = `Hörmətli, ${name}. Sizin üçün təyin olunmuş endirim ${discount.percent}%'dir. Endirimdən faydalanmaq üçün aşağıdakı linkə keçid edə bilərsiniz. Link: www.teqdimatim.az/order/${encodeURIComponent(slug)} Endirimlərin hesablanma qaydasıyla tanış olmaq üçün https://teqdimatim.az/faqs səhifəsini ziyarət edə bilərsiniz!`;
             } else {
                 return false;
             }
 
-            await db.email_logs.create({
+            await db.email_logs.create({ // Creating email logs
                 id,
                 email_type: discount.key,
                 email_source: 'check_discount',
@@ -160,21 +170,28 @@ let checkUserDiscountRequests = async (req, res) => {
                 html: emailContent, // html body
             });
 
-            await db.email_logs.update({
+            await db.email_logs.update({ // Update current email logs
                 email_status: 'success',
             },
-                {
-                    where: {
-                        id,
-                    }
-                });
+            {
+                where: {
+                    id,
+                }
+            });
 
-            await db.customer_requests.create({
-                id: customerId,
-                name,
-                email,
+            if (!checkIsCustomer) {
+                await db.customers.create({ // Creating new customer
+                    id: customerId,
+                    name,
+                    email,
+                    status: 'requested'
+                });
+            }
+
+            await db.customer_discounts.create({ // Creating new customer
+                customer_id: customerId,
                 discount_key: discount.key,
-                customer_status: 'pending'
+                status: false
             });
 
             return true;

@@ -18,103 +18,64 @@ getValidOrderRequest = async (req, res, next) => {
         requestId = matches[2];
     }
 
-    let isPending = 'pending';
-    let isClicked = 'clicked';
-    let isConfirmed = 'confirmed';
-    let isRequested = 'requested';
-    let isCancelled = 'cancelled';
-
-    const checkHasRequest = async (id) => {
-        let hasRequest = null;
+    const checkIsCustomer = async (id) => {
+        let isCustomer = null;
         if (id != undefined) {
-            hasRequest = await db.customer_requests.findOne({
-                where: {
-                    id,
-                }
-            });
-        }
-        return hasRequest;
-    }
-
-    try {
-        let hasRequest = await checkHasRequest(customerId);
-        if (hasRequest != null || undefined ? true : false) {
-            if (hasRequest.customer_status === isClicked || hasRequest.customer_status === isConfirmed) {
-                try {
-                    let validRequest = await db.customer_requests.findOne({
+            isCustomer = await db.customers.findOne({
+                include: [
+                    {
+                        model: sequelize.model('custom_orders'),
+                        as: 'custom_orders',
+                        attributes: ['status'],
+                        // where: {
+                        //     status: false
+                        // }
+                    },
+                    {
+                        model: sequelize.model('product_orders'),
+                        as: 'product_orders',
+                        attributes: ['status'],
+                        // where: {
+                        //     status: false
+                        // }
+                    },
+                    {
+                        model: sequelize.model('customer_discounts'),
+                        as: 'discounts',
                         include: [
                             {
                                 model: sequelize.model('discounts'),
                                 as: 'discount',
-                                attributes: ['name', 'key', 'percent'],
-                            }
+                                attributes: ['name', 'percent'],
+                            },
                         ],
-                        where: {
-                            id: customerId,
-                        },
-                        attributes: ['name', 'surname', 'email', 'phone', 'university_key', 'speciality', 'degree', 'course', 'group'],
-                    });
-                    res.status(200).json(validRequest);
-                } catch (error) {
-                    console.log('test');
-                    res.status(500).json(errorMessages.GENERAL_SERVER_ERROR);
-                }
-            } else if (hasRequest && hasRequest.customer_status === isRequested) {
-                let validRequest = await db.customer_requests.findOne({
-                    include: [
-                        {
-                            model: sequelize.model('discounts'),
-                            as: 'discount',
-                            attributes: ['name', 'key', 'percent'],
-                        }
-                    ],
-                    where: {
-                        id: customerId,
+                        attributes: ['status'],
+                        order: [
+                            ['createdAt', 'DESC'],
+                        ], // Sonuncu customer_discounts üçün sıralama təyin edir
+                        limit: 1, // Yalnız sonuncu customer_discounts məlumatını əldə edir
                     },
-                    attributes: ['name', 'email', 'admin_status'],
-                });
-                res.status(200).json(validRequest);
-            } else if (hasRequest && hasRequest.customer_status === isCancelled) {
-                let validRequest = await db.customer_requests.findOne({
-                    include: [
-                        {
-                            model: sequelize.model('discounts'),
-                            as: 'discount',
-                            attributes: ['name', 'key', 'percent'],
-                        }
-                    ],
-                    where: {
-                        id: customerId,
-                    },
-                    attributes: ['name', 'email', 'customer_status'],
-                });
-                res.status(200).json(validRequest);
-            } else {
-                await db.customer_requests.update({
-                    customer_status: isClicked,
-                },
                     {
-                        where: {
-                            id: customerId,
-                        },
-                    });
-                let validRequest = await db.customer_requests.findOne({
-                    include: [
-                        {
-                            model: sequelize.model('discounts'),
-                            as: 'discount',
-                            attributes: ['name', 'key', 'percent'],
-                        }
-                    ],
-                    where: {
-                        id: customerId,
+                        model: sequelize.model('universities'),
+                        as: 'university',
+                        attributes: ['name', 'key'],
                     },
-                    attributes: ['name', 'email'],
-                });
-                res.status(200).json(validRequest);
-            }
+                ],
+                where: {
+                    id,
+                },
+                attributes: ['name', 'surname', 'email', 'phone', 'speciality', 'degree', 'course', 'group'],
+            });
+        };
+        return isCustomer;
+    }
+
+    try {
+        let isCustomer = await checkIsCustomer(customerId);
+        if (isCustomer != null || undefined ? true : false) {
+            res.status(200).json({ isCustomer })
         } else {
-            res.status(404);
+            res.status(404).json( errorMessages.REQUEST_NOT_FOUND )
         }
     } catch (error) {
         res.status(500).json(errorMessages.GENERAL_SERVER_ERROR);

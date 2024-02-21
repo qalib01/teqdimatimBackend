@@ -21,7 +21,6 @@ const getIDs = (data) => {
 
 let createCustomOrder = async (req, res, next) => {
     let data = req.query;
-    console.log(data);
     let { customerId, requestId } = getIDs(data);
 
     try {
@@ -34,26 +33,19 @@ let createCustomOrder = async (req, res, next) => {
         if (hasOrder != null ? true : false) {
             res.status(409).json( errorMessages.ORDER_ALREADY_HAS );
         } else {
-            await db.customer_requests.update({
-                customer_status: 'requested',
-                admin_status: 'pending'
-            },
-            {
-                where: {
-                    id: customerId,
-                },
-            });
-            await db.custom_order_requests.create({
+            await db.custom_orders.create({
                 id: requestId,
-                customer_request_id: customerId,
+                customer_id: customerId,
                 subject_name: data.subjectName,
                 topic_name: data.topicName,
                 order_price: data.orderPrice,
-                last_order_price: data.lastOrderPrice,
-                language: data.language,
+                last_price: data.lastOrderPrice,
+                language_key: data.language,
                 page_count: data.pageCount,
-                program: data.program,
+                program_key: data.program,
                 additional_information: data.additionalInformation,
+                customer_status: 'requested',
+                admin_status: 'pending',
                 prepared_date: data.preparedDate,
             });
             res.status(200).json( successMessages.ORDER_REQUEST_SUCCESSFULL );
@@ -70,7 +62,7 @@ let createProductOrder = async (req, res, next) => {
     let { customerId, requestId } = getIDs(data);
 
     try {
-        let hasOrder = await db.product_order_requests.findOne({
+        let hasOrder = await db.product_requests.findOne({
             where: {
                 id: requestId,
             }
@@ -79,22 +71,14 @@ let createProductOrder = async (req, res, next) => {
         if (hasOrder != null ? true : false) {
             res.status(409).json( errorMessages.ORDER_ALREADY_HAS );
         } else {
-            await db.customer_requests.update({
-                customer_status: 'requested',
-                admin_status: 'pending'
-            },
-            {
-                where: {
-                    id: customerId,
-                },
-            });
             await db.product_order_requests.create({
                 id: requestId,
                 product_id: data.productId,
-                customer_request_id: customerId,
-                subject_name: data.subjectName,
-                last_order_price: data.lastOrderPrice,
+                customer_id: customerId,
+                last_price: data.lastOrderPrice,
                 additional_information: data.additionalInformation,
+                customer_status: 'requested',
+                admin_status: 'pending',
                 prepared_date: data.preparedDate,
             });
             res.status(200).json( successMessages.ORDER_REQUEST_SUCCESSFULL );

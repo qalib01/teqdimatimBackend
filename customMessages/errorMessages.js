@@ -34,6 +34,11 @@ var errorMessages = {
         message: 'Sizin artıq aktiv müraicətiniz mövcuddur. Cari müraciət bitməmiş yeni müraciət aça bilməzsiniz!'
     },
 
+    CUSTOMER_NOT_FOUND: {
+        key,
+        message: 'Qeyd olunan elektron poçtuna uyğun sifarişçi tapılmadı. Bunun bir xəta olduğunu düşünürsünüzsə, xahiş olunur ki, komdandamızla əlaqə saxlayasınız! ',
+    },
+
     CONTACT_MESSAGE_NOT_SEND: {
         key,
         message: 'Mesajınızın göndərilməsi zamanı gözlənilməz xəta baş verdi. Xahiş olunur ki, daha sonra yenidən cəhd edəsiniz!'
@@ -60,7 +65,7 @@ var errorMessages = {
 
     EMAIL_NOT_FOUND: {
         key,
-        message: 'Belə bir elektron poçt ünvanı tapılmadı. Əgər daha əvvəl abunə olmusunuzsa, xahiş olunur ki, sizə göndərilən linki yenidən yoxlayasınız və ya bizimlə əlaqə saxlayasınız! '
+        message: 'Belə bir elektron poçt ünvanı tapılmadı. Əgər daha əvvəl abunə olmusunuzsa, xahiş olunur ki, sizə göndərilən linki yenidən yoxlayasınız və ya bizimlə əlaqə saxlayasınız!'
     },
 
     GENERAL_SERVER_ERROR: {

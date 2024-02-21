@@ -21,10 +21,10 @@ module.exports = (sequelize, DataTypes) => {
       });
       customers.hasMany(models.customer_discounts, {
         foreignKey: 'customer_id',
-        as: 'product_discounts'
+        as: 'discounts'
       });
       customers.hasOne(models.universities, {
-        foreignKey: 'id',
+        foreignKey: 'key',
         sourceKey: 'university_key',
         as: 'university',
       });

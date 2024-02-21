@@ -23,12 +23,13 @@ let updateUserRequest = async (req, res, next) => {
                 id: customerId,
             }
         });
+        console.log(req.query.university);
     
         if (isCustomer.customer_status !== 'confirmed') {
-            await db.customer_requests.update({
+            await db.customers.update({
                 surname: req.query.surname,
                 phone: req.query.phone,
-                university_key: req.query.university_key,
+                university_key: req.query.university,
                 speciality: req.query.speciality,
                 degree: req.query.degree,
                 course: req.query.course,
@@ -64,16 +65,18 @@ let createCustomOrder = async (req, res, next) => {
     }
 
     try {
-        let hasOrder = await db.custom_order_requests.findOne({
+        let hasOrder = await db.custom_orders.findOne({
             where: {
                 id: requestId,
             }
         });
+
+        console.log(hasOrder);
     
         if (hasOrder != null ? true : false) {
             res.status(409).json( errorMessages.ORDER_ALREADY_HAS );
         } else {
-            await db.customer_requests.update({
+            await db.customers.update({
                 customer_status: 'requested',
                 admin_status: 'pending'
             },
@@ -83,7 +86,7 @@ let createCustomOrder = async (req, res, next) => {
                 },
             });
             console.log('Burda error olur!!!!');
-            await db.custom_order_requests.create({
+            await db.custom_orders.create({
                 id: requestId,
                 customer_request_id: customerId,
                 subject_name: data.subjectName,
